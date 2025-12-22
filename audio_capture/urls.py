@@ -3,5 +3,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("polls/", views.index, name="index"),
+    path("audio_capture/", views.index, name="index"),
 ]
