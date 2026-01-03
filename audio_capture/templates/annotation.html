@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>{% block title %}Essay{% endblock %}</title>
+
+    <script src="https://unpkg.com/jspsych@7.3.4"></script>
+    <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <script src="https://unpkg.com/@jspsych/plugin-html-audio-response@1.0.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@1.0.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.2.0"></script>
+
+</head>
+
+<body>
+    <div id="header">
+        {% block header %}
+        <h1 id='title'>
+            [PROJECT NAME]
+        </h1>
+        <h2 id='subtitle'>
+            [SUBTITLE AND/OR SHORT DESCRIPTION]
+        </h2>
+        {% endblock %}
+    </div>
+    <div id="jspsych-target"></div> 
+</body>
+
+<script>
+    const jsPsych = initJsPsych({
+        display_element: 'jspsych-target'
+    });
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    var init_mic = {
+        type: jsPsychInitializeMicrophone,
+    };
+
+    var instruction = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+            <p>[INSTRUCTIONS]</p>
+            <p>[PROMPT]</p>
+            <p>Preparation</p>
+        `,
+        choices: ['Begin.']
+    }
+
+    var trial = {
+        type: jsPsychHtmlAudioResponse,
+        stimulus: `
+            <p>[INSTRUCTIONS]</p>
+            <p>[PROMPT]</p>
+            <p>Recording...</p>
+            `,
+        recording_duration: 3500,
+        allow_playback: true,
+        on_finish: function(data) {
+            fetch('/save_audio/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    audio_base64: data.response,
+                    essay_id: 101
+                })
+            })
+        }
+    };
+
+    var timeline = [];
+
+    timeline.push(init_mic);
+    timeline.push(instruction);
+    timeline.push(trial);
+
+    jsPsych.run(timeline);
+</script>
+</html>
