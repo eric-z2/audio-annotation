@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>{% block title %}Homepage{% endblock %}</title>
+</head>
+
+<body>
+    <div id="header">
+        {% block header %}
+        <h1 id='title'>
+            [PROJECT NAME]
+        </h1>
+        <h2 id='subtitle'>
+            [SUBTITLE AND/OR SHORT DESCRIPTION]
+        </h2>
+        {% endblock %}
+    </div>
+    
+    <div id="content">
+        {% block content %}
+        <h3>
+            Background
+        </h3>
+
+        <h3>
+            Instructions
+        </h3>
+        <p>
+            eg. make sure you give permission for the website to access your microphone, your microphone is clear
+        </p>
+
+        <h3>
+            Task
+        </h3>
+        <p>
+            Your task is to blah blah blah
+        </p>
+
+        <h3>
+            Consent
+        </h3>
+        <form>
+            <input type="checkbox" id="consent" name="consent" required>
+            <label for="consent">I consent to blah blah blah</label>
+            <button type="submit" disabled>Begin Task</button>
+        </form>
+        {% endblock %}
+    </div>
+</body>
+</html>
