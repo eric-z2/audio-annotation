@@ -42,24 +42,25 @@
         type: jsPsychInitializeMicrophone,
     };
 
-    var instruction = {
+    // TODO
+    var instruction_essay = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
-            <p>[INSTRUCTIONS]</p>
+            <p>[ESSAY INSTRUCTIONS]</p>
             <p>[PROMPT]</p>
-            <p>Preparation</p>
+            <p>Preparation. Something about pressing the button below will start recording.</p>
         `,
         choices: ['Begin.']
     }
 
-    var trial = {
+    var trial_essay = {
         type: jsPsychHtmlAudioResponse,
         stimulus: `
-            <p>[INSTRUCTIONS]</p>
-            <p>[PROMPT]</p>
+            <p>[ESSAY INSTRUCTIONS]</p>
+            <p>[PROMPT: TODO]</p>
             <p>Recording...</p>
             `,
-        recording_duration: 3500,
+        recording_duration: 3500, // FIX DURATION
         allow_playback: true,
         on_finish: function(data) {
             fetch('/save_audio/', {
@@ -70,7 +71,42 @@
                 },
                 body: JSON.stringify({
                     audio_base64: data.response,
-                    essay_id: 101
+                    essay_id: 1 // PLACEHOLDER
+                })
+            })
+        }
+    };
+
+    // TODO
+    var instruction_aita = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+            <p>[AITA_INSTRUCTIONS]</p>
+            <p>[PROMPT: TODO]</p>
+            <p>Preparation. Something about pressing the button below will start recording.</p>
+        `,
+        choices: ['Begin.']
+    }
+
+    var trial_aita= {
+        type: jsPsychHtmlAudioResponse,
+        stimulus: `
+            <p>[AITA_INSTRUCTIONS]</p>
+            <p>[PROMPT: TODO]</p>
+            <p>Recording...</p>
+            `,
+        recording_duration: 3500, // FIX DURATION
+        allow_playback: true,
+        on_finish: function(data) {
+            fetch('/save_audio/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    audio_base64: data.response,
+                    essay_id: 1 // PLACEHOLDER
                 })
             })
         }
@@ -79,8 +115,10 @@
     var timeline = [];
 
     timeline.push(init_mic);
-    timeline.push(instruction);
-    timeline.push(trial);
+    timeline.push(instruction_essay);
+    timeline.push(trial_essay);
+    timeline.push(instruction_aita);
+    timeline.push(trial_aita);
 
     jsPsych.run(timeline);
 </script>
