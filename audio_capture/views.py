@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.template import loader
 import base64
@@ -8,8 +8,9 @@ from .models import EssayAudioStorage
 import datetime
 
 def homepage(request):
-    template = loader.get_template('homepage.html')
-    return HttpResponse(template.render())
+    if request.method == 'POST' and request.POST.get('consent'):
+        return redirect('annotation')
+    return render(request, 'homepage.html')
 
 def annotation(request):
     template = loader.get_template("annotation.html")

@@ -41,12 +41,22 @@
         <h3>
             Consent
         </h3>
-        <form>
+        <form method="POST" action="{% url 'homepage' %}">
+            {% csrf_token %}
             <input type="checkbox" id="consent" name="consent" required>
             <label for="consent">I consent to blah blah blah</label>
-            <button type="submit" disabled>Begin Task</button>
-        </form>
+            <div class="center">
+                <button type="submit" id="submitBtn" disabled>Begin Task</button>
+            </div>
+         </form>
         {% endblock %}
     </div>
+
+    <script>
+        document.getElementById('consent').addEventListener('change', function() {
+            document.getElementById('submitBtn').disabled = !this.checked;
+        });
+    </script>
 </body>
+
 </html>
