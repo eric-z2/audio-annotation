@@ -63,7 +63,7 @@
         recording_duration: 3500, // FIX DURATION
         allow_playback: true,
         on_finish: function(data) {
-            fetch('/save_audio/', {
+            fetch('/save_audio_essay/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -98,7 +98,7 @@
         recording_duration: 3500, // FIX DURATION
         allow_playback: true,
         on_finish: function(data) {
-            fetch('/save_audio/', {
+            fetch('/save_audio_aita/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,7 +106,7 @@
                 },
                 body: JSON.stringify({
                     audio_base64: data.response,
-                    essay_id: 1 // PLACEHOLDER
+                    aita_id: 1 // PLACEHOLDER
                 })
             })
         }
