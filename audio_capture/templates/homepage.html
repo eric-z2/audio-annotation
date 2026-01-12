@@ -48,7 +48,7 @@
             <input type="checkbox" id="consent" name="consent" required>
             <label for="consent">I consent to blah blah blah</label>
             <div class="center">
-                <button type="submit" id="submitBtn" disabled>Begin Task</button>
+                <button type="submit" id="submitbutton" class="submitbutton" disabled>Begin Task</button>
             </div>
          </form>
         {% endblock %}
@@ -56,7 +56,7 @@
 
     <script>
         document.getElementById('consent').addEventListener('change', function() {
-            document.getElementById('submitBtn').disabled = !this.checked;
+            document.getElementById('submitbutton').disabled = !this.checked;
         });
     </script>
 </body>
