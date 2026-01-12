@@ -24,29 +24,34 @@
             Background
         </h3>
         <p>
-            The [PROJECT NAME] project was created for the purpose of [reasons and what not]
+            The [PROJECT NAME] was created for the purpose of [REASONS]
         </p>
         <h3>
-            Instructions
+            Setup Instructions
         </h3>
         <p>
-            Please ensure that the device you are using has a functioning microphone that not obstructed by any objects. On the next page, you will be asked to give permission for this website to access your microphone. Please ensure you select "Allow while visiting site" or "Allow this time" or any equivalent options. Afterwards, you will have the ability to test your microphone to ensure the audio is clear (ADD THIS FUNCTIONALITY). 
+            Please ensure the device you are using has a functioning microphone and you are situated in a quiet environment. On the next page, you will be asked to give permission for this website to access your microphone. Please ensure you select "Allow while visiting site" or "Allow this time" or any equivalent options.
         </p>
 
         <h3>
             Task
         </h3>
         <p>
-            You will be shown a total of two prompts. [CONTINUE]
+            Your task is to record two audio responses for two questions: an essay question and a Reddit post from the forum r/AmITheAsshole. The task is designed to take 7 - 12 minutes including preparation and response time. Additional details will be provided later on.
         </p>
-
+        <h3>
+            Transparency and Confidentiality
+        </h3>
+        <p>
+            Audio recordings will be used for [PURPOSE] . Personal identifying information will not be attached to the recording. Recordings will be stored securely and accessed only by members on the project team.
+        </p>
         <h3>
             Consent
         </h3>
         <form method="POST" action="{% url 'homepage' %}">
             {% csrf_token %}
             <input type="checkbox" id="consent" name="consent" required>
-            <label for="consent">I consent to blah blah blah</label>
+            <label for="consent">I have read and understood the information above, and I agree to have my audio recorded and used as described. </label>
             <div class="center">
                 <button type="submit" id="submitbutton" class="submitbutton" disabled>Begin Task</button>
             </div>
