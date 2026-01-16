@@ -32,27 +32,19 @@
         <p>
             Please ensure the device you are using has a functioning microphone and you are situated in a quiet environment. On the next page, you will be asked to give permission for this website to access your microphone. Please ensure you select "Allow while visiting site" or "Allow this time" or any equivalent options.
         </p>
-
         <h3>
             Task
         </h3>
         <p>
             Your task is to record two audio responses for two questions: an essay question and a Reddit post from the forum r/AmITheAsshole. The task is designed to take 7 - 12 minutes including preparation and response time. Additional details will be provided later on.
         </p>
-        <h3>
-            Transparency and Confidentiality
-        </h3>
-        <p>
-            Audio recordings will be used for [PURPOSE] . Personal identifying information will not be attached to the recording. Recordings will be stored securely and accessed only by members on the project team.
-        </p>
-        <h3>
-            Consent
-        </h3>
         <form method="POST" action="{% url 'homepage' %}">
             {% csrf_token %}
-            <input type="checkbox" id="consent" name="consent" required>
-            <label for="consent">I have read and understood the information above, and I agree to have my audio recorded and used as described. </label>
-            <div class="center">
+            <p> Please enter your crowdwork id below to begin your task: </p> 
+            <div class='center'>
+                <input type="text" id="id" name="id" maxlength="200" required>
+            </div>
+            <div class='center'>
                 <button type="submit" id="submitbutton" class="submitbutton" disabled>Begin Task</button>
             </div>
          </form>
@@ -60,8 +52,20 @@
     </div>
 
     <script>
-        document.getElementById('consent').addEventListener('change', function() {
-            document.getElementById('submitbutton').disabled = !this.checked;
+        function checkIsEmpty() {
+            var chatinput = document.getElementById('id').value;
+            if(chatinput) {
+                document.getElementById('submitbutton').disabled = false;
+            } else {
+                document.getElementById('submitbutton').disabled = true;
+            }
+        }
+        window.addEventListener('load', () => {
+            checkIsEmpty();
+        });
+
+        document.getElementById('id').addEventListener('input', function() {
+            checkIsEmpty();
         });
     </script>
 </body>
