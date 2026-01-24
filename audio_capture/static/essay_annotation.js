@@ -118,8 +118,15 @@ async function createTimeline(essayJson, aitaJson) {
         stimulus: `
             <h2> PART 2: AITA Annotation </h2>
             <h3> INSTRUCTIONS </h3>
-            <p> You will be provided a post from the Reddit forum r/AmITheAsshole, where each poster describes a situation or interpersonal conflict that they were involved in and ask if they did something wrong or not, ie. AITA; "am I the asshole"? For each situation, answer the question "Is the author the asshole in this situation?", with yes, no, or unsure. Please try to use unsure sparingly, only when it's difficult to make a judgement in either direction. </p>
-            <p> The recording will be one minute long. For the rest of the time, explain how you arrived at that conclusion. You will have an additional thirty seconds after the one minute to wrap up your thoughts. </p> 
+            <p> You will be provided a post from the Reddit forum r/AmITheAsshole, where each author describes a situation or interpersonal conflict that they were involved in and ask if they did something wrong or not, ie. AITA; "am I the asshole"? For each situation, answer the question "Is the author the asshole in this situation?". Here are the possible answers you may provide:</p>
+            <ul>
+                <li>NTA (Not the Asshole): The author did nothing wrong.</li>
+                <li>YTA (You're the Asshole): The author did something wrong.</li>
+                <li>ESH (Everyone sucks here): Everyone did something wrong.</li>
+                <li>NAH (No Assholes): No one did anything wrong.</li>
+            </ul>
+            <p>Please limit your response to only one of these options.</p>
+            <p> The recording will be one minute long. For the rest of the time, please explain how you arrived at that conclusion. You will have an additional thirty seconds after the one minute to wrap up your thoughts. </p> 
             <h3> VIDEO WALKTHROUGH HERE </h3>
             <h3> PROMPT </h3>
             <p><b>Overview of Situation:</b> ${aitaJson["situation"]}</p>
@@ -133,7 +140,6 @@ async function createTimeline(essayJson, aitaJson) {
         type: jsPsychHtmlAudioResponse,
         stimulus: `
             <h2> PART 2: AITA Annotation </h2>
-            <h3> PROMPT </h3>
             <h3> PROMPT </h3>
             <p><b>Overview of Situation:</b> ${aitaJson["situation"]}</p>
             <p>${aitaJson["post"]}</p>
