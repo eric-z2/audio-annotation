@@ -7,50 +7,51 @@
 </head>
 
 <body>
-    <div id="header">
-        {% block header %}
-        <h1 id='title'>
-            [PROJECT NAME]
-        </h1>
-        <h2 id='subtitle'>
-            [SUBTITLE AND/OR SHORT DESCRIPTION]
-        </h2>
-        {% endblock %}
+    <div id="background-white">
+        <div id="header">
+            {% block header %}
+            <h1 id='title'>
+                [PROJECT NAME]
+            </h1>
+            <h2 id='subtitle'>
+                [SUBTITLE AND/OR SHORT DESCRIPTION]
+            </h2>
+            {% endblock %}
+        </div>
+        
+        <div id="content">
+            {% block content %}
+            <h3>
+                Background
+            </h3>
+            <p>
+                The [PROJECT NAME] was created for the purpose of [REASONS]
+            </p>
+            <h3>
+                Setup Instructions
+            </h3>
+            <p>
+                Please ensure the device you are using has a functioning microphone and you are situated in a quiet environment. On the next page, you will be asked to give permission for this website to access your microphone. Please ensure you select "Allow while visiting site" or "Allow this time" or any equivalent options.
+            </p>
+            <h3>
+                Task
+            </h3>
+            <p>
+                Your task is to record two audio responses for two questions: an essay question and a Reddit post from the forum r/AmITheAsshole. The task is designed to take 7 - 12 minutes including preparation and response time. Additional details will be provided.
+            </p>
+            <form method="POST" action="{% url 'homepage' %}">
+                {% csrf_token %}
+                <p> Please enter your crowdwork id below to begin your task: </p> 
+                <div class='center'>
+                    <input type="text" id="id" name="id" maxlength="200" required>
+                </div>
+                <div class='center'>
+                    <button type="submit" id="submitbutton" class="submitbutton" disabled>Begin Task</button>
+                </div>
+            </form>
+            {% endblock %}
+        </div>
     </div>
-    
-    <div id="content">
-        {% block content %}
-        <h3>
-            Background
-        </h3>
-        <p>
-            The [PROJECT NAME] was created for the purpose of [REASONS]
-        </p>
-        <h3>
-            Setup Instructions
-        </h3>
-        <p>
-            Please ensure the device you are using has a functioning microphone and you are situated in a quiet environment. On the next page, you will be asked to give permission for this website to access your microphone. Please ensure you select "Allow while visiting site" or "Allow this time" or any equivalent options.
-        </p>
-        <h3>
-            Task
-        </h3>
-        <p>
-            Your task is to record two audio responses for two questions: an essay question and a Reddit post from the forum r/AmITheAsshole. The task is designed to take 7 - 12 minutes including preparation and response time. Additional details will be provided.
-        </p>
-        <form method="POST" action="{% url 'homepage' %}">
-            {% csrf_token %}
-            <p> Please enter your crowdwork id below to begin your task: </p> 
-            <div class='center'>
-                <input type="text" id="id" name="id" maxlength="200" required>
-            </div>
-            <div class='center'>
-                <button type="submit" id="submitbutton" class="submitbutton" disabled>Begin Task</button>
-            </div>
-         </form>
-        {% endblock %}
-    </div>
-
     <script>
         function checkIsEmpty() {
             var chatinput = document.getElementById('id').value;

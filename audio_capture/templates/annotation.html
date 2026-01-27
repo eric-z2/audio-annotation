@@ -18,17 +18,22 @@
 </head>
 
 <body>
-    <div id="header">
-        {% block header %}
-        <h1 id='title'>
-            [PROJECT NAME]
-        </h1>
-        <h2 id='subtitle'>
-            [SUBTITLE AND/OR SHORT DESCRIPTION]
-        </h2>
-        {% endblock %}
+    <div id="background-white">
+        <div id="header">
+            {% block header %}
+            <h1 id='title'>
+                [PROJECT NAME]
+            </h1>
+            <h2 id='subtitle'>
+                [SUBTITLE AND/OR SHORT DESCRIPTION]
+            </h2>
+            {% endblock %}
+        </div>
+        <div id="content">
+            <div id="jspsych-target"></div> 
+        </div>
     </div>
-    <div id="jspsych-target"></div> 
+
 </body>
 <script>
     async function beginTrials() {
