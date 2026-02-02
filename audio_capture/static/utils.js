@@ -9,13 +9,23 @@ function getCookie(name) {
 
 function startTimer(length) {
     if (essayTimerInterval) clearInterval(essayTimerInterval);
-    
+
     var wait_time = length * 60 * 1000;
     var start_time = performance.now();
-    
+
     setTimeout(() => {
         var btn = document.querySelector('#finish-trial');
         if (btn) btn.disabled = true;
+    }, 100);
+    
+    setTimeout(() => {
+        var init_minutes = Math.floor(wait_time / 1000 / 60);
+        var init_seconds = Math.floor((wait_time - init_minutes*1000*60)/1000);
+
+        var clock = document.querySelector('#clock');
+        if (clock) {
+            clock.innerHTML = init_minutes + ':' + init_seconds.toString().padStart(2,'0');
+        }
     }, 100);
     
     essayTimerInterval = setInterval(function(){
