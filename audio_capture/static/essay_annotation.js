@@ -25,9 +25,9 @@ async function createTimeline(essayJson, aitaJson) {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
             <h3>Microphone Testing Instructions</h3>
-            <p>Before beginning the first trial, we ask all participants to complete a brief microphone self test. A ten second snippet of audio will be recorded and you will have the ability to play it back once time is up. If the audio quality is satisfactory, feel free to begin the trials. If not, we recommend switching devices or attaching an external microphone to improve sound quality. This is an self-diagnosed test; these ten seconds of audio will not be saved.</p>
-            <p>The trials will operate similar to how this test runs. Take this opportunity to familiarize yourself with the environment!</p>
-            <p>Clicking 'Begin.' will start the recording immediately. Please start the trial whenever you're ready. </p>
+            <p class="trial-text">Before beginning the first trial, we ask all participants to complete a brief microphone self test. A ten second snippet of audio will be recorded and you will have the ability to play it back once time is up. If the audio quality is satisfactory, feel free to begin the trials. If not, we recommend switching devices or attaching an external microphone to improve sound quality. This is an self-diagnosed test; these ten seconds of audio will not be saved.</p>
+            <p class="trial-text">The trials will operate similar to how this test runs. Take this opportunity to familiarize yourself with the environment!</p>
+            <p class="trial-text">Clicking 'Begin.' will start the recording immediately. Please begin whenever you're ready. </p>
         `,
         choices: ['Begin.']  
     }
@@ -36,9 +36,9 @@ async function createTimeline(essayJson, aitaJson) {
         type: jsPsychHtmlAudioResponse,
         stimulus: `
             <h3>Microphone Testing Instructions</h3>
-            <p>Before beginning the first trial, we ask all participants to complete a brief microphone self test. A ten second snippet of audio will be recorded and you will have the ability to play it back once time is up. If the audio quality is satisfactory, feel free to begin the trials. If not, we recommend switching devices, attaching an external microphone, or moving to a quieter environment to improve sound quality. This is an self-diagnosed test, and these ten seconds of audio will not be saved.</p>
-            <h3>Recording in Progress</h3>
-            <p>Time until end of recording: <span id = "clock">0:05</span></p>
+            <p class="trial-text">Before beginning the first trial, we ask all participants to complete a brief microphone self test. A five second snippet of audio will be recorded and you will have the ability to play it back once time is up. If the audio quality is satisfactory, feel free to begin the trials. If not, we recommend switching devices, attaching an external microphone, or moving to a quieter environment. This is an self-diagnosed test so this audio snippet will not be saved.</p>
+            <h3 class='recording'>Recording in Progress</h3>
+            <p class='recording'>Time until end of recording: <span id="clock"></span></p>
             `,
         recording_duration: 5 * 1000,
         allow_playback: true,
@@ -59,11 +59,10 @@ async function createTimeline(essayJson, aitaJson) {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
             <h3> PART 1: ESSAY QUESTION </h3>
-            <p>The first trial involves a six minute response to an essay question. You will be asked to talk and reflect about your life. Please note that you will be unable to end the recording until the six minutes are up. After that, you will have an additional minute to wrap up your thoughts. We encourage you to try to speak for the entire duration, but feel free to take a pause to gather your thoughts. Brief periods with no sound are okay. </p>
-            <h3> VIDEO WALKTHROUGH HERE </h3>
+            <p class="trial-text">The first trial involves a six minute response to an essay question. You will be asked to talk and reflect about your life. Please note that you will be unable to end the recording until the six minutes are up. After that, you will have an additional minute to wrap up your thoughts. We encourage you to try to speak for the entire duration, but feel free to take a pause to gather your thoughts. Brief periods with no sound are okay. </p>
             <h3> PROMPT </h3>
-            <p>${essayJson["text"]}</p>
-            <p>Clicking 'Begin.' will start the recording immediately. Please start the trial whenever you're ready. </p>
+            <p class="trial-text">${essayJson["text"]}</p>
+            <p class="trial-text">Clicking 'Begin.' will start the recording immediately. Please begin whenever you're ready. </p>
         `,
         choices: ['Begin.']
     }
@@ -73,10 +72,9 @@ async function createTimeline(essayJson, aitaJson) {
         stimulus: `
             <h2> PART 1: ESSAY QUESTION</h2>
             <h3> PROMPT </h3>
-            <p>${essayJson["text"]}</p>
-            <h3>Recoring in Progress</h3>
-            <p>Clicking 'Begin.' will start the recording immediately. Please start the trial whenever you're ready. </p>
-            <p>Time until end of recording: <span id = "clock">6:00</span></p>
+            <p class="trial-text">${essayJson["text"]}</p>
+            <h3 class='recording'>Recoring in Progress</h3>
+            <p class='recording'>Time until end of recording: <span id = "clock"></span></p>
             `,
         // recording_duration: 6 * 60 * 1000,
         recording_duration: 1/12 * 60 * 1000, // DEMO
@@ -112,26 +110,22 @@ async function createTimeline(essayJson, aitaJson) {
     //        }
     };
 
-    // EXPLAIN THE OPTIONS, NTA, YTA, ESH, NAH
     var instruction_aita = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
             <h2> PART 2: AITA Annotation </h2>
             <h3> INSTRUCTIONS </h3>
-            <p> You will be provided a post from the Reddit forum r/AmITheAsshole, where each author describes a situation or interpersonal conflict that they were involved in and ask if they did something wrong or not, ie. AITA; "am I the asshole"? For each situation, answer the question "Is the author the asshole in this situation?". Here are the possible answers you may provide:</p>
-            <ul>
+            <p class="trial-text">Your task is to read and analyze a post from the Reddit forum r/AmITheAsshole. In this forum, each author describes a situation or interpersonal conflict that they were involved in and ask if they did something wrong or not, ie. AITA; "am I the asshole"? For each situation, answer the question "Is the author the asshole in this situation?". Here are the possible answers you may provide:</p>
+            <ul class="trial-text">
                 <li>NTA (Not the Asshole): The author did nothing wrong.</li>
                 <li>YTA (You're the Asshole): The author did something wrong.</li>
                 <li>ESH (Everyone sucks here): Everyone did something wrong.</li>
                 <li>NAH (No Assholes): No one did anything wrong.</li>
             </ul>
-            <p>Please limit your response to only one of these options.</p>
-            <p> The recording will be one minute long. For the rest of the time, please explain how you arrived at that conclusion. You will have an additional thirty seconds after the one minute to wrap up your thoughts. </p> 
-            <h3> VIDEO WALKTHROUGH HERE </h3>
-            <h3> PROMPT </h3>
-            <p><b>Overview of Situation:</b> ${aitaJson["situation"]}</p>
-            <p>${aitaJson["post"]}</p>
-            <p>Clicking 'Begin.' will start the recording immediately. Please start the trial whenever you're ready. </p>
+            <p class="trial-text">Please limit your response to only one of these options.</p>
+            <p class="trial-text">The situation will be displayed after clicking "Begin." and you will have three minutes to speak and read. As you are reading the post, please speak your thoughts, reasoning, and your conclusion out loud. You will have an additional minute after the three minutes to wrap up your thoughts. </p> 
+
+            <p class="trial-text">Clicking 'Begin.' will start the recording immediately. Please begin whenever you're ready. </p>
         `,
         choices: ['Begin.']
     }
@@ -141,10 +135,17 @@ async function createTimeline(essayJson, aitaJson) {
         stimulus: `
             <h2> PART 2: AITA Annotation </h2>
             <h3> PROMPT </h3>
-            <p><b>Overview of Situation:</b> ${aitaJson["situation"]}</p>
-            <p>${aitaJson["post"]}</p>
-            <h3> Recording in Progress </h3>
-            <p>Time until end of recording: <span id = "clock">1:00</span></p>
+            <p class="trial-text"><b>Overview of Situation:</b> ${aitaJson["situation"]}</p>
+            <p class="trial-text">${aitaJson["post"]}</p>
+            <p class="trial-text">Possible answers:</p>
+            <ul class="trial-text">
+                <li>NTA (Not the Asshole): The author did nothing wrong.</li>
+                <li>YTA (You're the Asshole): The author did something wrong.</li>
+                <li>ESH (Everyone sucks here): Everyone did something wrong.</li>
+                <li>NAH (No Assholes): No one did anything wrong.</li>
+            </ul>
+            <h3 class='recording'> Recording in Progress </h3>
+            <p class='recording'>Time until end of recording: <span id = "clock"></span></p>
             `,
         // recording_duration: 1.5 * 60 * 1000,
         recording_duration: 1/12 * 60 * 1000, // DEMO
