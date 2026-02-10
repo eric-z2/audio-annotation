@@ -8,5 +8,4 @@
 path
 uv.lock
 
-audio_storage/*
 __pycache__/
