@@ -8,14 +8,14 @@ Please ensure you have Python 3.12+ and uv installed on your system.
 
 ## Installation
 
-1. Clone the repository
+**1. Clone the repository**
 
 ```bash
 git clone https://github.com/eric-z2/perspectivism-audio-annotation.git
 cd perspectivism-audio-annotation
 ```
 
-2. Activate the virtual environment
+**2. Activate the virtual environment**
 
 ```bash
 uv .venv
@@ -33,7 +33,7 @@ Windows:
 .venv\Scripts\activate
 ```
 
-3. Install dependencies
+**3. Install dependencies**
 
 ```bash
 uv sync
@@ -57,8 +57,8 @@ The application should start available at `http://127.0.0.1:8000/homepage/`
 
 ## Project Structure
 
-`main_project`: contains the main project configurations
-`audio_capture`: logic for audio capture app
+`main_project`: contains the main project configurations \
+`audio_capture`: logic for audio capture app \
 `audio_storage`: storage for recorded audio snippets
 
 ## Contact
