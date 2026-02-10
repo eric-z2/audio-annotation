@@ -1,2 +1,12 @@
+.env
+.venv
+
 *.pyc
+*.webm
+*.log
+*.pot
 path
+uv.lock
+
+audio_storage/*
+__pycache__/

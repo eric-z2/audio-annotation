@@ -58,9 +58,9 @@ async function createTimeline(essayJson, aitaJson) {
     var instruction_essay = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
-            <h3> PART 1: ESSAY QUESTION </h3>
+            <h2> Part 1: Essay Question</h2>
             <p class="trial-text">The first trial involves a six minute response to an essay question. You will be asked to talk and reflect about your life. Please note that you will be unable to end the recording until the six minutes are up. After that, you will have an additional minute to wrap up your thoughts. We encourage you to try to speak for the entire duration, but feel free to take a pause to gather your thoughts. Brief periods with no sound are okay. </p>
-            <h3> PROMPT </h3>
+            <h3> Prompt </h3>
             <p class="trial-text">${essayJson["text"]}</p>
             <p class="trial-text">Clicking 'Begin.' will start the recording immediately. Please begin whenever you're ready. </p>
         `,
@@ -70,8 +70,8 @@ async function createTimeline(essayJson, aitaJson) {
     var trial_essay = {
         type: jsPsychHtmlAudioResponse,
         stimulus: `
-            <h2> PART 1: ESSAY QUESTION</h2>
-            <h3> PROMPT </h3>
+            <h2> Part 1: Essay Question</h2>
+            <h3> Prompt </h3>
             <p class="trial-text">${essayJson["text"]}</p>
             <h3 class='recording'>Recoring in Progress</h3>
             <p class='recording'>Time until end of recording: <span id = "clock"></span></p>
@@ -91,30 +91,40 @@ async function createTimeline(essayJson, aitaJson) {
                 }
             });
         },
-    //        on_finish: function(data) {
-    //            if (essayTimerInterval) {
-    //                clearInterval(essayTimerInterval);
-    //            }
+           on_finish: function(data) {
+               if (essayTimerInterval) {
+                   clearInterval(essayTimerInterval);
+               }
             
-    //            fetch('/save_audio_essay/', {
-    //                method: 'POST',
-    //                headers: {
-    //                    'Content-Type': 'application/json',
-    //                    'X-CSRFToken': getCookie('csrftoken')
-    //                },
-    //                body: JSON.stringify({
-    //                    audio_base64: data.response,
-    //                    essay_id: essayJson["id"]
-    //                })
-    //            })
-    //        }
+               fetch('/save_audio_essay/', {
+                   method: 'POST',
+                   headers: {
+                       'Content-Type': 'application/json',
+                       'X-CSRFToken': getCookie('csrftoken')
+                   },
+                   body: JSON.stringify({
+                       audio_base64: data.response,
+                       essay_id: essayJson["id"]
+                   })
+               })
+                .then(response => {
+                    console.log('Response status:', response.status);  // Debug log
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+           }
     };
 
     var instruction_aita = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
-            <h2> PART 2: AITA Annotation </h2>
-            <h3> INSTRUCTIONS </h3>
+            <h2> Part 2: AITA Annotation </h2>
+            <h3> Instructions </h3>
             <p class="trial-text">Your task is to read and analyze a post from the Reddit forum r/AmITheAsshole. In this forum, each author describes a situation or interpersonal conflict that they were involved in and ask if they did something wrong or not, ie. AITA; "am I the asshole"? For each situation, answer the question "Is the author the asshole in this situation?". Here are the possible answers you may provide:</p>
             <ul class="trial-text">
                 <li>NTA (Not the Asshole): The author did nothing wrong.</li>
@@ -123,9 +133,9 @@ async function createTimeline(essayJson, aitaJson) {
                 <li>NAH (No Assholes): No one did anything wrong.</li>
             </ul>
             <p class="trial-text">Please limit your response to only one of these options.</p>
-            <p class="trial-text">The situation will be displayed after clicking "Begin." and you will have three minutes to speak and read. As you are reading the post, please speak your thoughts, reasoning, and your conclusion out loud. You will have an additional minute after the three minutes to wrap up your thoughts. </p> 
+            <p class="trial-text">The post will be displayed after clicking "Begin." and you will have three minutes to speak and read. As you are reading the post, please speak your thoughts, reasoning, and your conclusion out loud. You will have an additional minute after the three minutes to wrap up your thoughts. </p> 
 
-            <p class="trial-text">Clicking 'Begin.' will start the recording immediately. Please begin whenever you're ready. </p>
+            <p class="trial-text">Clicking 'Begin.' will display the post and start the recording immediately. Please begin whenever you're ready. </p>
         `,
         choices: ['Begin.']
     }
@@ -133,8 +143,8 @@ async function createTimeline(essayJson, aitaJson) {
     var trial_aita= {
         type: jsPsychHtmlAudioResponse,
         stimulus: `
-            <h2> PART 2: AITA Annotation </h2>
-            <h3> PROMPT </h3>
+            <h2> Part 2: AITA Annotation </h2>
+            <h3> Prompt </h3>
             <p class="trial-text"><b>Overview of Situation:</b> ${aitaJson["situation"]}</p>
             <p class="trial-text">${aitaJson["post"]}</p>
             <p class="trial-text">Possible answers:</p>

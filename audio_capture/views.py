@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 import base64
 import json
@@ -19,55 +19,68 @@ def annotation(request):
     template = loader.get_template("annotation.html")
     return HttpResponse(template.render())
 
-def save_audio_essay(request):
-    template = loader.get_template("homepage.html") # Fix
-    
+def save_audio_essay(request):    
     if request.method == 'POST':
-        data = json.loads(request.body)
-        audio_data = data.get('audio_base64') 
-        date = datetime.datetime.now()
-        crowdworker_id = request.session.get('crowdworker_id', 'unknown')
+        try:
+            data = json.loads(request.body)
+            audio_data = data.get('audio_base64') 
+            date = datetime.datetime.now()
+            crowdworker_id = request.session.get('crowdworker_id', 'unknown')
 
-        audio_file = ContentFile(base64.b64decode(audio_data), name=f"{crowdworker_id}_essay_{date}.webm")
+            audio_file = ContentFile(base64.b64decode(audio_data), name=f"{crowdworker_id}_essay_{date}.webm")
 
-        new_entry = EssayAudioStorage(
-            user_id=crowdworker_id,
-            essay_id=data.get('essay_id'),
-            audio_file=audio_file
-        )
-        new_entry.save()
+            new_entry = EssayAudioStorage(
+                user_id=crowdworker_id,
+                essay_id=data.get('essay_id'),
+                audio_file=audio_file
+            )
+            new_entry.save()
 
-        # # Debugging
-        # print("FILE SAVED TO:", new_entry.audio_file.path)
-
-        return HttpResponse(template.render()) # Not sure what to return here
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Audio saved successfully'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            }, status=400)
     else:
-        return HttpResponse(template.render()) # And here
-    
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Method not allowed'
+        }, status=405)    
 
 def save_audio_aita(request):
-    template = loader.get_template("homepage.html") # Fix
-    
     if request.method == 'POST':
-        data = json.loads(request.body)
-        audio_data = data.get('audio_base64') 
-        date = datetime.datetime.now()
-        crowdworker_id = request.session.get('crowdworker_id', 'unknown')
+        try:
+            data = json.loads(request.body)
+            audio_data = data.get('audio_base64') 
+            date = datetime.datetime.now()
+            crowdworker_id = request.session.get('crowdworker_id', 'unknown')
 
-        audio_file = ContentFile(base64.b64decode(audio_data), name=f"{crowdworker_id}_aita_{date}.webm")
+            audio_file = ContentFile(base64.b64decode(audio_data), name=f"{crowdworker_id}_aita_{date}.webm")
 
-        new_entry = AITAAudioStorage(
-            user_id=crowdworker_id,
-            post_id=data.get('aita_id'),
-            audio_file=audio_file,
-            label=data.get('label')
-        )
-        print(data.get('label'))
-        new_entry.save()
+            new_entry = AITAAudioStorage(
+                user_id=crowdworker_id,
+                post_id=data.get('aita_id'),
+                audio_file=audio_file,
+                label=data.get('label')
+            )
+            print(data.get('label'))
+            new_entry.save()
 
-        # # Debugging
-        # print("FILE SAVED TO:", new_entry.audio_file.path)
-
-        return HttpResponse(template.render()) # Not sure what to return here
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Audio saved successfully'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            }, status=400)
     else:
-        return HttpResponse(template.render()) # And here
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Method not allowed'
+        }, status=405)  
