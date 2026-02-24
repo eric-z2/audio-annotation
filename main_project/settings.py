@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-doa#@p@^7j-@2x760x4b54w_10zbavgeu6ckl9klorbn0^a^)i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['nlp.cas.mcmaster.ca', '127.0.0.1', '*']
+ALLOWED_HOSTS = ['nlp.cas.mcmaster.ca', '127.0.0.1', 'localhost']
+
+CSRF_TRUSTED_ORIGINS = ["https://nlp.cas.mcmaster.ca"]
 
 
 # Application definition
