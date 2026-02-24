@@ -25,7 +25,9 @@ SECRET_KEY = 'SECRET_KEY'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['nlp.cas.mcmaster.ca', '127.0.0.1', '*']
+ALLOWED_HOSTS = ['nlp.cas.mcmaster.ca', '127.0.0.1', 'localhost']
+
+CSRF_TRUSTED_ORIGINS = ["https://nlp.cas.mcmaster.ca"]
 
 
 # Application definition
