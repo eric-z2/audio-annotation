@@ -1,3 +1,11 @@
+// Min and max lengths in minutes
+MIN_LEN_TEST = 1/12
+MAX_LEN_TEST = 1/6
+MIN_LEN_ESSAY = 4
+MAX_LEN_ESSAY = 6
+MIN_LEN_AITA = 2
+MAX_LEN_AITA = 4
+
 async function loadEssayJson() {
     var response = await fetch('/static/json/essay_questions.json');
     var json = await response.json();
@@ -38,17 +46,17 @@ async function createTimeline(essayJson, aitaJson) {
             <h3>Microphone Testing Instructions</h3>
             <p class="trial-text">Before beginning the first trial, we ask all participants to complete a brief microphone self test. A five second snippet of audio will be recorded and you will have the ability to play it back once time is up. If the audio quality is satisfactory, feel free to begin the trials. If not, we recommend switching devices, attaching an external microphone, or moving to a quieter environment. This is an self-diagnosed test so this audio snippet will not be saved.</p>
             <h3 class='recording'>Recording in Progress</h3>
-            <p class='recording'>Time until end of recording: <span id="clock"></span></p>
+            <p class='recording'>Required duration remaining: <span id="clock"></span></p>
             `,
-        recording_duration: 5 * 1000,
+        recording_duration: MAX_LEN_TEST * 60 * 1000,
         allow_playback: true,
-        choices: ['Finish.'],
+        done_button_label: 'Finish.',
         on_load: function() {
-            startTimer(1/12);
+            startTimer(MIN_LEN_TEST);
             
             document.addEventListener('click', function(e) {
                 if (e.target.id == 'record-again') {
-                    startTimer(1/12);
+                    startTimer(MIN_LEN_TEST);
                 }
             });
         },
@@ -74,20 +82,20 @@ async function createTimeline(essayJson, aitaJson) {
             <h3> Prompt </h3>
             <p class="trial-text">${essayJson["text"]}</p>
             <h3 class='recording'>Recoring in Progress</h3>
-            <p class='recording'>Time until end of recording: <span id = "clock"></span></p>
+            <p class='recording'>Required duration remaining: <span id = "clock"></span></p>
             `,
         // recording_duration: 6 * 60 * 1000,
-        recording_duration: 1/12 * 60 * 1000, // DEMO
+        recording_duration: MAX_LEN_ESSAY * 60 * 1000, // DEMO
         allow_playback: true,
-        choices: ['Finish.'],
+        done_button_label: 'Finish.',
         on_load: function() {
             // startTimer(6);
-            startTimer(1/12); // DEMO
+            startTimer(MIN_LEN_ESSAY); // DEMO
             
             document.addEventListener('click', function(e) {
                 if (e.target.id == 'record-again') {
                     // startTimer(6);
-                    startTimer(1/12); // DEMO
+                    startTimer(MIN_LEN_ESSAY); // DEMO
                 }
             });
         },
@@ -155,20 +163,17 @@ async function createTimeline(essayJson, aitaJson) {
                 <li>NAH (No Assholes): No one did anything wrong.</li>
             </ul>
             <h3 class='recording'> Recording in Progress </h3>
-            <p class='recording'>Time until end of recording: <span id = "clock"></span></p>
+            <p class='recording'>Required duration remaining: <span id = "clock"></span></p>
             `,
-        // recording_duration: 1.5 * 60 * 1000,
-        recording_duration: 1/12 * 60 * 1000, // DEMO
+        recording_duration: MAX_LEN_AITA * 60 * 1000,
         allow_playback: true,
-        choices: ['Finish.'],
+        done_button_label: 'Finish.',
         on_load: function() {
-            // startTimer(1);
-            startTimer(1/12); // DEMO
+            startTimer(MIN_LEN_AITA);
             
             document.addEventListener('click', function(e) {
                 if (e.target.id == 'record-again') {
-                    // startTimer(1);
-                    startTimer(1/12); // DEMO
+                    startTimer(MIN_LEN_AITA);
                 }
             });
         },
@@ -200,7 +205,7 @@ async function createTimeline(essayJson, aitaJson) {
                 body: JSON.stringify({
                     audio_base64: aitaAudio,
                     label: data.response.aita_label,
-                    aita_id: 1 // PLACEHOLDER
+                    aita_id: aitaJson['id']
                 })
             })
 
