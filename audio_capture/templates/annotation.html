@@ -16,6 +16,32 @@
     <script src="https://unpkg.com/@jspsych/plugin-instructions@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@1.1.3"></script>
 
+    <script>
+        window.addEventListener("unhandledrejection", e => {
+            console.log("Unhandled promise rejection: " + e.reason);
+            document.getElementById("error-message").innerHTML = "An error occurred during loading. This could be because your microphone is blocked by your browser settings. Please check your settings and try again.";
+        });
+
+        async function beginTrials() {
+            const essayJson = await loadEssayJson();
+            const aitaJson = await loadAitaJson();
+
+            const timeline = createTimeline(essayJson, aitaJson);
+
+            return timeline;
+        }
+
+        (async () => {
+            const jsPsych = initJsPsych({
+                display_element: "jspsych-target"
+            });
+
+            const timeline = await beginTrials();
+
+            jsPsych.run(timeline);
+        })();
+    </script>
+
 </head>
 
 <body>
@@ -28,29 +54,10 @@
             {% endblock %}
         </div>
         <div id="content">
+            <div id="error-message" style="text-align: center;font-size:large; color: red;"></div>
             <div id="jspsych-target"></div> 
         </div>
     </div>
-
 </body>
-<script>
-    async function beginTrials() {
-        const essayJson = await loadEssayJson();
-        const aitaJson = await loadAitaJson();
 
-        const timeline = createTimeline(essayJson, aitaJson);
-
-        return timeline;
-    }
-
-    (async () => {
-        const jsPsych = initJsPsych({
-            display_element: "jspsych-target"
-        });
-
-        const timeline = await beginTrials();
-
-        jsPsych.run(timeline);
-    })();
-</script>
 </html>

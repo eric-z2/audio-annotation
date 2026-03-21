@@ -129,3 +129,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Default media URLs
 MEDIA_URL = '/audio_storage/'
 MEDIA_ROOT = BASE_DIR / 'audio_storage'
+
+
+
+# Annotation Tool Settings
+ANNOTATION_TASK_NAME = ''
