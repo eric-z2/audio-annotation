@@ -7,11 +7,15 @@ from django.core.files.base import ContentFile
 from .models import EssayAudioStorage, AITAAudioStorage
 import datetime
 
+from django.conf import settings
+
 def homepage(request):
     if request.method == 'POST' and request.POST.get('id'):
         request.session['crowdworker_id'] = request.POST.get('id')
         return redirect('annotation')
-    return render(request, 'homepage.html')
+    context = {'task_name': settings.ANNOTATION_TASK_NAME}
+    print(context)
+    return render(request, 'homepage.html', context=context)
 
 def annotation(request):
     if 'crowdworker_id' not in request.session:

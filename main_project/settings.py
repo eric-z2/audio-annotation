@@ -133,4 +133,5 @@ MEDIA_ROOT = BASE_DIR / 'audio_storage'
 
 
 # Annotation Tool Settings
-ANNOTATION_TASK_NAME = ''
+ANNOTATION_TASK_NAME = 'Perspectivism Audio Annotation'
+ANNOTATION_TASK_MC_OPTIONS = ['NTA (Not the asshole)', 'YTA (You\'re the asshole)', 'ESH (Everyone sucks here)', 'NAH (No one\'s the asshole)']
