@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 
+/* general */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -24,7 +25,7 @@ p, ul, .jspsych-content {
     font-family: 'Open Sans', sans-serif;
 }
 
-/* ── Top bar ── */
+/* top bar */
 .top-bar {
     width: 100%;
     max-width: 48rem;
@@ -76,7 +77,7 @@ p, ul, .jspsych-content {
     color: #cbd5e1;
 }
 
-/* ── Main card ── */
+/* main card */
 .card {
     width: 100%;
     max-width: 48rem;
@@ -97,7 +98,7 @@ p, ul, .jspsych-content {
     color: #0f172a;
 }
 
-/* ── Sections ── */
+/* sections */
 .section {
     margin-bottom: 2rem;
 }
@@ -149,7 +150,7 @@ p, ul, .jspsych-content {
     font-family: 'Open Sans', sans-serif;
 }
 
-/* ── Input area ── */
+/* input */
 .input-section {
     margin-top: 2rem;
     padding-top: 1.5rem;
@@ -218,11 +219,6 @@ p, ul, .jspsych-content {
     background-color: #cbd5e1;
     color: #94a3b8;
     cursor: not-allowed;
-}
-
-/* Arrow symbol */
-.arrow {
-    font-size: 1rem;
 }
 
 @media (max-width: 640px) {

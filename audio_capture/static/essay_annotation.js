@@ -279,6 +279,7 @@ async function createTimeline(essayJson, aitaJson) {
 
     timeline.push(init_mic);
     timeline.push(mic_test);
+    
     timeline.push(mic_test_trial);
     timeline.push(instruction_essay);
     timeline.push(trial_essay);
