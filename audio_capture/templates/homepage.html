@@ -7,46 +7,70 @@
 </head>
 
 <body>
-    <div id="background-white">
-        <div id="header">
-            {% block header %}
-            <h1 id='title'>
-                Audio Annotation
-            </h1>
-            {% endblock %}
+    <div class="top-bar">
+        <div class="brand">
+            <div class="brand-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" 
+                    fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="22"/>
+                </svg>
+            </div>
+            <h1>Perspectivism Audio Annotation</h1>
         </div>
-        
-        <div id="content">
-            <h3>
-                Background
-            </h3>
-            <p class="homepage-text">
-                The Audio Annotation project is a tool designed to help researchers obtain quality, LLM-resistant crowdsourced annotations. 
-            </p>
-            <h3>
-                Setup Instructions
-            </h3>
-            <p class="homepage-text">
-                Please ensure the device you are using has a functioning microphone and you are situated in a quiet environment. On the next page you will be asked to give permission for this website to access your microphone. Please ensure you select "Allow while visiting site" or "Allow this time" or any equivalent options.
-            </p>
-            <h3>
-                Task
-            </h3>
-            <p class="homepage-text">
-                Your task is to record two audio responses for two questions: an essay question and a Reddit post from the forum r/AmITheAsshole. The task is designed to take 15 minutes including preparation and response time. Additional details will be provided.
-            </p>
-            <form method="POST" action="{% url 'homepage' %}">
-                {% csrf_token %}
-                <p class="homepage-text"> Please enter your crowdwork id below to begin your task: </p> 
-                <div class='center'>
-                    <input type="text" id="id" name="id" maxlength="200" required>
-                </div>
-                <div class='center'>
-                    <button type="submit" id="submitbutton" class="submitbutton" disabled>Begin Task</button>
-                </div>
-            </form>
+        <div class="step-indicator">
+            <span class="active">Intro</span>
+            <span class="sep">/</span>
+            <span>Tasks</span>
         </div>
     </div>
+    <div class="card">
+        <div class="section">
+            <div class="section-label">Background</div>
+                <p>
+                    The Audio Annotation project is a tool designed to help researchers obtain quality, LLM-resistant crowdsourced annotations.
+                </p>
+            </div>
+
+            <div class="section">
+                <div class="section-label">Setup Instructions</div>
+                <p>
+                    Please ensure the device you are using has a functioning microphone and you are situated in a quiet environment. On the next page, you will be asked to give permission for this website to access your microphone. Please ensure you select <strong>"Allow while visiting site"</strong> or <strong>"Allow this time"</strong> or any equivalent options.
+                </p>
+            </div>
+
+            <div class="section">
+                <div class="section-label">Your Task</div>
+                <p>
+                    Your task is to record two audio responses for two questions: an essay question and a Reddit post from the forum r/AmITheAsshole. The task is designed to take 15 minutes including preparation and response time. Additional details will be provided.
+                </p>
+            </div>
+                <form method="POST" action="{% url 'homepage' %}">
+                    {% csrf_token %}
+                    <div class="input-section">
+                        <label class="input-label">Please enter your Crowdwork ID to begin:</label>
+                        <input
+                            type="text"
+                            id="id"
+                            name="id"
+                            class="worker-input"
+                            maxlength="200"
+                            required
+                            oninput="checkIsEmpty()"
+                        >
+                    </div>
+
+                    <div class="card-footer">
+                        <button type="submit" id="submitbutton" class="btn-primary" disabled>
+                            Continue <span class="arrow">→</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         function checkIsEmpty() {
             var chatinput = document.getElementById('id').value;
