@@ -1,37 +1,38 @@
-// Min and max lengths in minutes
-MIN_LEN_TEST = 1/12
-MAX_LEN_TEST = 1/6
-MIN_LEN_ESSAY = 0.1
-MAX_LEN_ESSAY = 6
-MIN_LEN_AITA = 0.1
-MAX_LEN_AITA = 4
+const MIN_LEN_TEST = JSON.parse(document.getElementById('lengths').textContent)[0]['min_len_test'];
+const MAX_LEN_TEST = JSON.parse(document.getElementById('lengths').textContent)[0]['max_len_test'];
+const MIN_LEN_ESSAY = JSON.parse(document.getElementById('lengths').textContent)[0]['min_len_essay'];
+const MAX_LEN_ESSAY = JSON.parse(document.getElementById('lengths').textContent)[0]['max_len_essay'];
+const MIN_LEN_AITA = JSON.parse(document.getElementById('lengths').textContent)[0]['min_len_aita'];
+const MAX_LEN_AITA = JSON.parse(document.getElementById('lengths').textContent)[0]['max_len_aita'];
+
+const aita_options = JSON.parse(document.getElementById('aita_options').textContent);
 
 async function loadEssayJson() {
-    var response = await fetch('/static/json/essay_questions.json');
-    var json = await response.json();
-    var randEntry = Math.floor(Math.random() * json.length);
+	var response = await fetch('/static/json/essay_questions.json');
+	var json = await response.json();
+	var randEntry = Math.floor(Math.random() * json.length);
 
-    return json[randEntry];
+	return json[randEntry];
 }
 
 async function loadAitaJson() {
-    var response = await fetch('/static/json/aita_questions.json');
-    var json = await response.json();
-    var randEntry = Math.floor(Math.random() * json.length);
+	var response = await fetch('/static/json/aita_questions.json');
+	var json = await response.json();
+	var randEntry = Math.floor(Math.random() * json.length);
 
-    return json[randEntry];
+	return json[randEntry];
 }
 
 async function createTimeline(essayJson, aitaJson) {
-    var timeline = [];
+	var timeline = [];
 
-    var init_mic = {
-        type: jsPsychInitializeMicrophone,
-    };
+	var init_mic = {
+		type: jsPsychInitializeMicrophone,
+	};
 
-    var mic_test = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: `
+	var mic_test = {
+		type: jsPsychHtmlButtonResponse,
+		stimulus: `
             <h2 class="section-label">Microphone Testing Instructions</h2>
 
             <div class="section">
@@ -45,10 +46,10 @@ async function createTimeline(essayJson, aitaJson) {
                 Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
             </p>
         `,
-        choices: ['Begin']  
-    }
+		choices: ['Begin'],
+	};
 
-    var mic_test_trial = {
+	var mic_test_trial = {
 		type: jsPsychHtmlAudioResponse,
 		stimulus: `
             <h2 class="section-label">Microphone Testing Instructions</h2>
@@ -79,7 +80,7 @@ async function createTimeline(essayJson, aitaJson) {
 		},
 	};
 
-    var instruction_essay = {
+	var instruction_essay = {
 		type: jsPsychHtmlButtonResponse,
 		stimulus: `
             <h2 class="section-label"> Part 1: Essay Question</h2>
@@ -100,7 +101,7 @@ async function createTimeline(essayJson, aitaJson) {
 		choices: ['Begin'],
 	};
 
-    var trial_essay = {
+	var trial_essay = {
 		type: jsPsychHtmlAudioResponse,
 		stimulus: `
             <h2 class="section-label"> Part 1: Essay Question</h2>
@@ -160,7 +161,7 @@ async function createTimeline(essayJson, aitaJson) {
 		},
 	};
 
-    var instruction_aita = {
+	var instruction_aita = {
 		type: jsPsychHtmlButtonResponse,
 		stimulus: `
             <h2 class="section-label"> Part 2: AITA Annotation </h2>
@@ -191,7 +192,7 @@ async function createTimeline(essayJson, aitaJson) {
 		choices: ['Begin'],
 	};
 
-    var trial_aita = {
+	var trial_aita = {
 		type: jsPsychHtmlAudioResponse,
 		stimulus: `
             <h2 class="section-label"> Part 2: AITA Annotation </h2>
@@ -241,52 +242,51 @@ async function createTimeline(essayJson, aitaJson) {
 		},
 	};
 
-    var aita_choice = {
-        type: jsPsychSurveyMultiChoice,
-        questions: [
-            {
-                prompt: 'What was your final judgement?', 
-                name: 'aita_label', 
-                options: ['NTA (Not the asshole)', 'YTA (You\'re the asshole)', 'ESH (Everyone sucks here)', 'NAH (No one\'s the asshole)'], 
-                required: true
-            }
-        ], 
-        on_finish: function(data) {
-            // fetch('/save_audio_aita/', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'X-CSRFToken': getCookie('csrftoken')
-            //     },
-            //     body: JSON.stringify({
-            //         audio_base64: aitaAudio,
-            //         label: data.response.aita_label,
-            //         aita_id: aitaJson['id']
-            //     })
-            // })
+	var aita_choice = {
+		type: jsPsychSurveyMultiChoice,
+		questions: [
+			{
+				prompt: 'What was your final judgement?',
+				name: 'aita_label',
+				options: aita_options,
+				required: true,
+			},
+		],
+		on_finish: function (data) {
+			// fetch('/save_audio_aita/', {
+			//     method: 'POST',
+			//     headers: {
+			//         'Content-Type': 'application/json',
+			//         'X-CSRFToken': getCookie('csrftoken')
+			//     },
+			//     body: JSON.stringify({
+			//         audio_base64: aitaAudio,
+			//         label: data.response.aita_label,
+			//         aita_id: aitaJson['id']
+			//     })
+			// })
+			// aitaAudio = null
+		},
+	};
 
-            // aitaAudio = null
-        }
-    }
+	var endscreen = {
+		type: jsPsychInstructions,
+		pages: [
+			'You have reached the end of the task, thank you for participating!',
+		],
+		show_clickable_nav: false,
+	};
 
-    var endscreen = {
-        type: jsPsychInstructions,
-        pages: [
-        'You have reached the end of the task, thank you for participating!'
-        ],
-        show_clickable_nav: false
-    }
+	timeline.push(init_mic);
+	timeline.push(mic_test);
 
-    timeline.push(init_mic);
-    timeline.push(mic_test);
-    
-    timeline.push(mic_test_trial);
-    timeline.push(instruction_essay);
-    timeline.push(trial_essay);
-    timeline.push(instruction_aita);
-    timeline.push(trial_aita);
-    timeline.push(aita_choice);
-    timeline.push(endscreen);
+	timeline.push(mic_test_trial);
+	timeline.push(instruction_essay);
+	timeline.push(trial_essay);
+	timeline.push(instruction_aita);
+	timeline.push(trial_aita);
+	timeline.push(aita_choice);
+	timeline.push(endscreen);
 
-    return timeline;
+	return timeline;
 }

@@ -14,14 +14,25 @@ def homepage(request):
         request.session['crowdworker_id'] = request.POST.get('id')
         return redirect('annotation')
     context = {'task_name': settings.ANNOTATION_TASK_NAME}
-    print(context)
     return render(request, 'homepage.html', context=context)
 
 def annotation(request):
     if 'crowdworker_id' not in request.session:
         return redirect('homepage')
-    template = loader.get_template("annotation.html")
-    return HttpResponse(template.render())
+    context = {
+        'lengths': [
+            {
+                'min_len_test': settings.MIN_LEN_TEST,
+                'max_len_test': settings.MAX_LEN_TEST,
+                'min_len_essay': settings.MIN_LEN_ESSAY,
+                'max_len_essay': settings.MAX_LEN_ESSAY,
+                'min_len_aita': settings.MIN_LEN_AITA,
+                'max_len_aita': settings.MAX_LEN_AITA
+            }
+        ],
+        'aita_options': settings.ANNOTATION_TASK_MC_OPTIONS
+    }
+    return render(request, "annotation.html", context=context)
 
 def save_audio_essay(request):    
     if request.method == 'POST':

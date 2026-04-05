@@ -135,3 +135,11 @@ MEDIA_ROOT = BASE_DIR / 'audio_storage'
 # Annotation Tool Settings
 ANNOTATION_TASK_NAME = 'Perspectivism Audio Annotation'
 ANNOTATION_TASK_MC_OPTIONS = ['NTA (Not the asshole)', 'YTA (You\'re the asshole)', 'ESH (Everyone sucks here)', 'NAH (No one\'s the asshole)']
+
+# Time Settings
+MIN_LEN_TEST = 1/12
+MAX_LEN_TEST = 1/6
+MIN_LEN_ESSAY = 0.1
+MAX_LEN_ESSAY = 6
+MIN_LEN_AITA = 0.1
+MAX_LEN_AITA = 4
