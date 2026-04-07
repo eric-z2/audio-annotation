@@ -4,56 +4,85 @@ A Django-based web application for convenient audio capture and storage. This pr
 
 ## Prerequisites
 
-Please ensure you have Python 3.12+ and uv installed on your system.
+Please ensure you have Python 3.12+ installed on your system.
 
 ## Installation
 
-**1. Clone the repository**
+### 1. Clone the repository**
 
 ```bash
 git clone https://github.com/eric-z2/perspectivism-audio-annotation.git
 cd perspectivism-audio-annotation
 ```
 
-**2. Activate the virtual environment**
+### 2. Setup environment**
 
-```bash
-uv .venv
-```
+**macOS/Linux:**
 
-macOS/Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-Windows:
-
-```bash
-.venv\Scripts\activate
-```
-
-**3. Install dependencies**
+If you have `uv` installed, run:
 
 ```bash
 uv sync
+source .venv/bin/activate
+```
+
+Or with standard Python:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+**Windows:**
+
+If you have `uv` installed, run:
+
+```bash
+uv sync
+.venv\Scripts\activate
+```
+
+Or with standard Python:
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### 3. Configure environment variables
+
+Create a `.env` file in the project root:
+```bash
+touch .env
+```
+
+Generate a secret key and copy the output:
+```bash
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
+Add the key to your `.env` file:
+```
+SECRET_KEY='secret-key-goes-here'
 ```
 
 ## Development
 
-1. Run migrations
+### 1. Run migrations
 
 ```bash
 python manage.py migrate
 ```
 
-2. Start development server
+### 2. Start development server
 
 ```bash
 python manage.py runserver
 ```
 
-The application should start available at `http://127.0.0.1:8000/homepage/`
+The application should start at `http://127.0.0.1:8000/annotation/homepage/`
 
 ## Project Structure
 

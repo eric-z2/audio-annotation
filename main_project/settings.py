@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,14 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'SECRET_KEY'
+load_dotenv()
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = ['nlp.cas.mcmaster.ca', '127.0.0.1', 'localhost']
-
-CSRF_TRUSTED_ORIGINS = ["https://nlp.cas.mcmaster.ca"]
 
 
 # Application definition
@@ -119,7 +119,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    BASE_DIR / 'staticfiles',
+    BASE_DIR / "questions"
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -130,16 +133,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/audio_storage/'
 MEDIA_ROOT = BASE_DIR / 'audio_storage'
 
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
+
+# Modify trusted hosts here
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+CSRF_TRUSTED_ORIGINS = []
 
 # Annotation Tool Settings
 ANNOTATION_TASK_NAME = 'Perspectivism Audio Annotation'
-ANNOTATION_TASK_MC_OPTIONS = ['NTA (Not the asshole)', 'YTA (You\'re the asshole)', 'ESH (Everyone sucks here)', 'NAH (No one\'s the asshole)']
+INTRODUCTION_TEXT = 'Your task is to record two audio responses for two questions: an essay question and a Reddit post from the forum r/AmITheAsshole. The task is designed to take 15 minutes including preparation and response time. Additional details will be provided.'
+ENDING_TEXT = 'You have reached the end of the task, thank you for participating!'
 
-# Time Settings
-MIN_LEN_TEST = 1/12
-MAX_LEN_TEST = 1/6
-MIN_LEN_ESSAY = 0.1
-MAX_LEN_ESSAY = 6
-MIN_LEN_AITA = 0.1
-MAX_LEN_AITA = 4
+# Design
+BASE_COLOUR = "#4f46e5"
+BASE_COLOUR_DARK = "#2e22b3"
+
+# Time settings in seconds
+MIN_LEN_TEST = 1
+MAX_LEN_TEST = 10

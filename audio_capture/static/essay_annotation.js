@@ -1,29 +1,174 @@
 const MIN_LEN_TEST = JSON.parse(document.getElementById('lengths').textContent)[0]['min_len_test'];
 const MAX_LEN_TEST = JSON.parse(document.getElementById('lengths').textContent)[0]['max_len_test'];
-const MIN_LEN_ESSAY = JSON.parse(document.getElementById('lengths').textContent)[0]['min_len_essay'];
-const MAX_LEN_ESSAY = JSON.parse(document.getElementById('lengths').textContent)[0]['max_len_essay'];
-const MIN_LEN_AITA = JSON.parse(document.getElementById('lengths').textContent)[0]['min_len_aita'];
-const MAX_LEN_AITA = JSON.parse(document.getElementById('lengths').textContent)[0]['max_len_aita'];
+const ENDING_TEXT = JSON.parse(document.getElementById('end_text').textContent);
 
-const aita_options = JSON.parse(document.getElementById('aita_options').textContent);
-
-async function loadEssayJson() {
-	var response = await fetch('/static/json/essay_questions.json');
+async function loadJson() {
+	var response = await fetch('/static/questions.json');
 	var json = await response.json();
-	var randEntry = Math.floor(Math.random() * json.length);
 
-	return json[randEntry];
+	return json;
 }
 
-async function loadAitaJson() {
-	var response = await fetch('/static/json/aita_questions.json');
-	var json = await response.json();
-	var randEntry = Math.floor(Math.random() * json.length);
+async function baseBefore(i, trialData, trialJson) {
+	var instruction_text = `
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<div class="section">
+			<p>
+				${trialData['instructions']}
+			</p>
+		</div>
+		<h2 class="section-label"> Prompt </h2>
+		<p class='emphasize'>
+			${trialJson['question']}
+		</p>
+		<br>
+		<p class='recording'>
+			Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
+		</p>
+	`;
 
-	return json[randEntry];
+	var trial_text = `
+			<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+			<div class="section">
+				<p>
+					${trialData['instructions']}
+				</p>
+			</div>
+			<h2 class="section-label"> Prompt </h2>
+			<p class='emphasize'>
+				${trialJson['question']}
+			</p>
+			<br>
+			<div class='recording'>
+				<h2 class='recording-title'>Recoring in Progress</h2>
+				<p>Required duration remaining: <strong><span id="clock"></span></strong></p>
+			</div>
+	`;
+
+	return {
+		"instruction_text": instruction_text,
+		"trial_text": trial_text
+	};
 }
 
-async function createTimeline(essayJson, aitaJson) {
+async function baseAfter(i, trialData, trialJson) {
+	var instruction_text = `
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<div class="section">
+			<p>
+				${trialData['instructions']}
+			</p>
+		</div>
+		<p class='recording'>
+			Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
+		</p>
+	`;
+
+	var trial_text = `
+			<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+			<div class="section">
+				<p>
+					${trialData['instructions']}
+				</p>
+			</div>
+			<h2 class="section-label"> Prompt </h2>
+			<p class='emphasize'>
+				${trialJson['question']}
+			</p>
+			<br>
+			<div class='recording'>
+				<h2 class='recording-title'>Recoring in Progress</h2>
+				<p>Required duration remaining: <strong><span id="clock"></span></strong></p>
+			</div>
+	`;
+
+	return {
+		"instruction_text": instruction_text,
+		"trial_text": trial_text
+	};
+}
+
+async function mcBefore(i, trialData, trialJson) {
+	var instruction_text = `
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<div class="section">
+			<p>
+				${trialData['instructions']}
+			</p>
+		</div>
+		<h2 class="section-label"> Prompt </h2>
+		<p class="emphasize">
+			${trialJson['question']}
+		</p>
+		<br>
+		<p class='recording'>
+			Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
+		</p>
+	`;
+	
+	var trial_text = `
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<div class="section">
+			<p>
+				${trialData['instructions']}
+			</p>
+		</div>
+		<h2 class="section-label"> Prompt </h2>
+		<p class="emphasize">
+			${trialJson['question']}
+		</p>
+		<br>
+		<div class='recording'>
+			<h2 class='recording-title'>Recoring in Progress</h2>
+			<p>Required duration remaining: <strong><span id="clock"></span></strong></p>
+		</div>
+	`;
+	
+	return {
+		"instruction_text": instruction_text,
+		"trial_text": trial_text
+	};
+}
+
+async function mcAfter(i, trialData, trialJson) {
+	var instruction_text = `
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<div class="section">
+			<p>
+				${trialData['instructions']}
+			</p>
+		</div>
+
+		<p class='recording'>
+			Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
+		</p>
+	`;
+	
+	var trial_text = `
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<div class="section">
+			<p>
+				${trialData['instructions']}
+			</p>
+		</div>
+		<h2 class="section-label"> Prompt </h2>
+		<p class="emphasize">
+			${trialJson['question']}
+		</p>
+		<br>
+		<div class='recording'>
+			<h2 class='recording-title'>Recoring in Progress</h2>
+			<p>Required duration remaining: <strong><span id="clock"></span></strong></p>
+		</div>
+	`;
+	
+	return {
+		"instruction_text": instruction_text,
+		"trial_text": trial_text
+	}
+}
+
+async function createTimeline(allJson) {
 	var timeline = [];
 
 	var init_mic = {
@@ -39,7 +184,7 @@ async function createTimeline(essayJson, aitaJson) {
                 <p>
                     Before beginning the first trial, we ask all participants to complete a brief microphone self-test. A ten-second snippet of audio will be recorded and you will have the ability to play it back once time is up.
                     <br><br>
-                    If the audio quality is satisfactory, feel free to begin the trials. If not, we recommend switching devices or attaching an external microphone. This is a self-diagnosed test; <strong>these ten seconds of audio will not be saved.</strong> The trials will operate similar to how this test runs. Take this opportunity to familiarize yourself with the environment!
+                    If the audio quality is satisfactory, feel free to begin the trials. If not, we recommend switching devices or attaching an external microphone. This is a self-diagnosed test; <strong>these ten seconds of audio will not be saved.</strong> The trials will operate identically to this test run, so take this opportunity to familiarize yourself with the environment!
                 </p>
             </div>
             <p class='recording'>
@@ -58,7 +203,7 @@ async function createTimeline(essayJson, aitaJson) {
                 <p>
                     Before beginning the first trial, we ask all participants to complete a brief microphone self-test. A ten-second snippet of audio will be recorded and you will have the ability to play it back once time is up.
                     <br><br>
-                    If the audio quality is satisfactory, feel free to begin the trials. If not, we recommend switching devices or attaching an external microphone. This is a self-diagnosed test; <strong>these ten seconds of audio will not be saved.</strong> 
+                    If the audio quality is satisfactory, feel free to begin the trials. If not, we recommend switching devices or attaching an external microphone. This is a self-diagnosed test; <strong>these ten seconds of audio will not be saved.</strong> The trials will operate identically to this test run, so take this opportunity to familiarize yourself with the environment!
                 </p>
             </div>
             <div class='recording'>
@@ -66,7 +211,7 @@ async function createTimeline(essayJson, aitaJson) {
                 <p>Required duration remaining: <strong><span id="clock"></span></strong></p>
             </div>
             `,
-		recording_duration: MAX_LEN_TEST * 60 * 1000,
+		recording_duration: MAX_LEN_TEST * 1000,
 		allow_playback: true,
 		done_button_label: 'Finish',
 		on_load: function () {
@@ -80,212 +225,160 @@ async function createTimeline(essayJson, aitaJson) {
 		},
 	};
 
-	var instruction_essay = {
-		type: jsPsychHtmlButtonResponse,
-		stimulus: `
-            <h2 class="section-label"> Part 1: Essay Question</h2>
-            <div class="section">
-                <p>
-                    The first trial involves a six minute response to an essay question. You will be asked to talk and reflect about your life. Please note that you will be unable to end the recording until the six minutes are up. After that, you will have an additional minute to wrap up your thoughts. We encourage you to try to speak for the entire duration, but feel free to take a pause to gather your thoughts. Brief periods with no sound are okay. 
-                </p>
-            </div>
-            <h2 class="section-label"> Prompt </h2>
-            <p class='emphasize'>
-                ${essayJson['text']}
-            </p>
-            <br>
-            <p class='recording'>
-                Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
-            </p>
-        `,
-		choices: ['Begin'],
-	};
+	timeline.push(init_mic);
+	timeline.push(mic_test);
+	timeline.push(mic_test_trial);
 
-	var trial_essay = {
-		type: jsPsychHtmlAudioResponse,
-		stimulus: `
-            <h2 class="section-label"> Part 1: Essay Question</h2>
-            <div class="section">
-                <p>
-                    The first trial involves a six minute response to an essay question. You will be asked to talk and reflect about your life. Please note that you will be unable to end the recording until the six minutes are up. After that, you will have an additional minute to wrap up your thoughts. We encourage you to try to speak for the entire duration, but feel free to take a pause to gather your thoughts. Brief periods with no sound are okay. 
-                </p>
-            </div>
-            <h2 class="section-label"> Prompt </h2>
-            <p class='emphasize'>
-                ${essayJson['text']}
-            </p>
-            <br>
-            <div class='recording'>
-                <h2 class='recording-title'>Recoring in Progress</h2>
-                <p>Required duration remaining: <strong><span id="clock"></span></strong></p>
-            </div>
-            `,
-		recording_duration: MAX_LEN_ESSAY * 60 * 1000,
-		allow_playback: true,
-		done_button_label: 'Finish',
-		on_load: function () {
-			startTimer(MIN_LEN_ESSAY);
+	for (let i = 0; i < allJson.length; i++) {
+		let randEntry = Math.floor(Math.random() * allJson[i]['questions'].length);
+		const trialJson = allJson[i]['questions'][randEntry];
+		const trialData = allJson[i];
 
-			document.addEventListener('click', function (e) {
-				if (e.target.id == 'record-again') {
-					startTimer(MIN_LEN_ESSAY);
-				}
-			});
-		},
-		on_finish: function (data) {
-			if (essayTimerInterval) {
-				clearInterval(essayTimerInterval);
+		if (allJson[i].hasOwnProperty("mc_options")) {
+			var text = {}
+			if (allJson[i]["display"] == "before") {
+				text = await mcBefore(i, trialData, trialJson);
+			} else if (allJson[i]["display"] == "after") {
+				text = await mcAfter(i, trialData, trialJson);
+			} else {
+				// TODO
 			}
 
-			// fetch('/save_audio_essay/', {
-			// 	method: 'POST',
-			// 	headers: {
-			// 		'Content-Type': 'application/json',
-			// 		'X-CSRFToken': getCookie('csrftoken'),
-			// 	},
-			// 	body: JSON.stringify({
-			// 		audio_base64: data.response,
-			// 		essay_id: essayJson['id'],
-			// 	}),
-			// })
-			// 	.then((response) => {
-			// 		console.log('Response status:', response.status); // Debug log
-			// 		return response.json();
-			// 	})
-			// 	.then((data) => {
-			// 		console.log('Success:', data);
-			// 	})
-			// 	.catch((error) => {
-			// 		console.error('Error:', error);
-			// 	});
-		},
-	};
+			var instruction = {
+				type: jsPsychHtmlButtonResponse,
+				stimulus: text["instruction_text"],
+				choices: ['Begin'],
+			};
 
-	var instruction_aita = {
-		type: jsPsychHtmlButtonResponse,
-		stimulus: `
-            <h2 class="section-label"> Part 2: AITA Annotation </h2>
-            <div class="section">
-                <p>
-                    Your task is to read and analyze a post from the Reddit forum r/AmITheAsshole. In this forum, each author describes a situation or interpersonal conflict that they were involved in and ask if they did something wrong or not, i.e., AITA; "am I the asshole"? For each situation, answer the question "Is the author the asshole in this situation?" Here are the possible answers you may provide:
-                </p>
-                <br>
-                <div class="section">
-                    <ul class="list">
-                        <li>NTA (Not the Asshole): The author did nothing wrong.</li>
-                        <li>YTA (You're the Asshole): The author did something wrong.</li>
-                        <li>ESH (Everyone sucks here): Everyone did something wrong.</li>
-                        <li>NAH (No Assholes): No one did anything wrong.</li>
-                    </ul>
-                </div>
-                <p>
-                    Please use your best judgement based on the given information and limit your response to only one of these options.
-                    <br><br>
-                    The post will be displayed after clicking 'Begin' and you will have three minutes to speak and read. As you are reading the post, please speak your thoughts, reasoning, and your conclusion out loud. You will have an additional minute after the three minutes to wrap up your thoughts.
-                </p>
-            </div>
+			var trial = {
+				type: jsPsychHtmlAudioResponse,
+				stimulus: text["trial_text"],
+				recording_duration: trialData['max_time'] * 1000,
+				allow_playback: true,
+				done_button_label: 'Finish',
+				on_load: function () {
+					var minTime = trialData['min_time'];
+					startTimer(minTime);
 
-            <p class='recording'>
-                Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
-            </p>
-        `,
-		choices: ['Begin'],
-	};
+					document.addEventListener('click', function (e) {
+						if (e.target.id == 'record-again') {
+							startTimer(minTime);
+						}
+					});
+				},
+				on_finish: function (data) {
+					if (timerInterval) {
+						clearInterval(timerInterval);
+					}
+					trialAudio = data.response;
+				},
+			};
 
-	var trial_aita = {
-		type: jsPsychHtmlAudioResponse,
-		stimulus: `
-            <h2 class="section-label"> Part 2: AITA Annotation </h2>
-            <div class="section">
-                <p>
-                    Your task is to read and analyze a post from the Reddit forum r/AmITheAsshole. In this forum, each author describes a situation or interpersonal conflict that they were involved in and ask if they did something wrong or not, i.e., AITA; "am I the asshole"? For each situation, answer the question "Is the author the asshole in this situation?" Here are the possible answers you may provide:
-                </p>
-            </div>
-            <h2 class="section-label"> Prompt </h2>
-            <p class="emphasize">
-                <strong>Overview of Situation:</strong> ${aitaJson['situation']}
-                <br><br>
-                ${aitaJson['post']}
-            </p>
-            <br>
-            <div class="section">
-                <p>Possible answers:</p>
-                <ul class="list">
-                    <li>NTA (Not the Asshole): The author did nothing wrong.</li>
-                    <li>YTA (You're the Asshole): The author did something wrong.</li>
-                    <li>ESH (Everyone sucks here): Everyone did something wrong.</li>
-                    <li>NAH (No Assholes): No one did anything wrong.</li>
-                </ul>
-            </div>
-            <div class='recording'>
-                <h2 class='recording-title'>Recoring in Progress</h2>
-                <p>Required duration remaining: <strong><span id="clock"></span></strong></p>
-            </div>
-            `,
-		recording_duration: MAX_LEN_AITA * 60 * 1000,
-		allow_playback: true,
-		done_button_label: 'Finish',
-		on_load: function () {
-			startTimer(MIN_LEN_AITA);
+			var choice = {
+				type: jsPsychSurveyMultiChoice,
+				questions: [
+					{
+						prompt: 'What was your final judgement?',
+						name: 'label',
+						options: trialData['mc_options'],
+						required: true,
+					},
+				],
+				on_finish: function (data) {
+					// fetch('/save_audio/', {
+					// 	method: 'POST',
+					// 	headers: {
+					// 		'Content-Type': 'application/json',
+					// 		'X-CSRFToken': getCookie('csrftoken'),
+					// 	},
+					// 	body: JSON.stringify({
+					// 		audio_base64: trialAudio,
+					// 		label: data.response.label,
+					// 		trial_name: trialData['trial_name'],
+					// 		trial_id: trialJson['id'],
+					// 	}),
+					// });
+					// trialAudio = null;
+				},
+			};
 
-			document.addEventListener('click', function (e) {
-				if (e.target.id == 'record-again') {
-					startTimer(MIN_LEN_AITA);
-				}
-			});
-		},
-		on_finish: function (data) {
-			if (essayTimerInterval) {
-				clearInterval(essayTimerInterval);
+			timeline.push(instruction);
+			timeline.push(trial);
+			timeline.push(choice);
+		} else {
+			var text = {};
+			if (allJson[i]['display'] == 'before') {
+				text = await baseBefore(i, trialData, trialJson);
+			} else if (allJson[i]['display'] == 'after') {
+				text = await baseAfter(i, trialData, trialJson);
+			} else {
+				// TODO
 			}
-			aitaAudio = data.response;
-		},
-	};
+			var instruction = {
+				type: jsPsychHtmlButtonResponse,
+				stimulus: text["instruction_text"],
+				choices: ['Begin'],
+			};
 
-	var aita_choice = {
-		type: jsPsychSurveyMultiChoice,
-		questions: [
-			{
-				prompt: 'What was your final judgement?',
-				name: 'aita_label',
-				options: aita_options,
-				required: true,
-			},
-		],
-		on_finish: function (data) {
-			// fetch('/save_audio_aita/', {
-			//     method: 'POST',
-			//     headers: {
-			//         'Content-Type': 'application/json',
-			//         'X-CSRFToken': getCookie('csrftoken')
-			//     },
-			//     body: JSON.stringify({
-			//         audio_base64: aitaAudio,
-			//         label: data.response.aita_label,
-			//         aita_id: aitaJson['id']
-			//     })
-			// })
-			// aitaAudio = null
-		},
-	};
+			var trial = {
+				type: jsPsychHtmlAudioResponse,
+				stimulus: text["trial_text"],
+				recording_duration: trialData['max_time'] * 1000,
+				allow_playback: true,
+				done_button_label: 'Finish',
+				on_load: function () {
+					var minTime = trialData['min_time'];
+					startTimer(minTime);
+
+					document.addEventListener('click', function (e) {
+						if (e.target.id == 'record-again') {
+							startTimer(minTime);
+						}
+					});
+				},
+				on_finish: function (data) {
+				// 	if (timerInterval) {
+				// 		clearInterval(timerInterval);
+				// 	}
+
+				// 	fetch('/save_audio/', {
+				// 		method: 'POST',
+				// 		headers: {
+				// 			'Content-Type': 'application/json',
+				// 			'X-CSRFToken': getCookie('csrftoken'),
+				// 		},
+				// 		body: JSON.stringify({
+				// 			audio_base64: data.response,
+				// 			trial_name: trialData['trial_name'],
+				// 			trial_id: trialJson['id'],
+				// 		}),
+				// 	})
+				// 		.then((response) => {
+				// 			console.log('Response status:', response.status); // Debug log
+				// 			return response.json();
+				// 		})
+				// 		.then((data) => {
+				// 			console.log('Success:', data);
+				// 		})
+				// 		.catch((error) => {
+				// 			console.error('Error:', error);
+				// 		});
+				},
+			};	
+
+			timeline.push(instruction);
+			timeline.push(trial);
+		}
+	}
 
 	var endscreen = {
 		type: jsPsychInstructions,
 		pages: [
-			'You have reached the end of the task, thank you for participating!',
+			ENDING_TEXT,
 		],
 		show_clickable_nav: false,
 	};
 
-	timeline.push(init_mic);
-	timeline.push(mic_test);
-
-	timeline.push(mic_test_trial);
-	timeline.push(instruction_essay);
-	timeline.push(trial_essay);
-	timeline.push(instruction_aita);
-	timeline.push(trial_aita);
-	timeline.push(aita_choice);
 	timeline.push(endscreen);
 
 	return timeline;

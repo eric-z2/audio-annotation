@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
     {% load static %}
+    <style>
+        :root {
+            --base_colour: {{colour}};
+            --base_colour_dark: {{colour_dark}};
+        }
+    </style>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <title>{% block title %}Homepage{% endblock %}</title>
+
 </head>
 
 <body>
@@ -42,9 +49,7 @@
 
             <div class="section">
                 <div class="section-label">Your Task</div>
-                <p>
-                    Your task is to record two audio responses for two questions: an essay question and a Reddit post from the forum r/AmITheAsshole. The task is designed to take 15 minutes including preparation and response time. Additional details will be provided.
-                </p>
+                <p>{{intro_text}}</p>
             </div>
                 <form method="POST" action="{% url 'homepage' %}">
                     {% csrf_token %}
@@ -63,7 +68,7 @@
 
                     <div class="card-footer">
                         <button type="submit" id="submitbutton" class="btn-primary" disabled>
-                            Continue <span class="arrow">→</span>
+                            Continue
                         </button>
                     </div>
                 </form>

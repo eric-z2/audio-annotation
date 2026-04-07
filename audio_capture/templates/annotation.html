@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
     <script src="https://unpkg.com/jspsych@7.3.4"></script>
-    <link
-        href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css"
-        rel="stylesheet"
-        type="text/css"
-    />
+    <style>
+        :root {
+            --base_colour: {{colour}};
+            --base_colour_dark: {{colour_dark}};
+        }
+    </style>
+    <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" type="text/css" />
     <script src="https://unpkg.com/@jspsych/plugin-html-audio-response@1.0.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@1.0.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.2.0"></script>
@@ -14,7 +16,7 @@
     <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@1.1.3"></script>
 
     {{lengths|json_script:'lengths'}}
-    {{aita_options|json_script:'aita_options'}}
+    {{end_text|json_script:'end_text'}}
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}" />
@@ -31,10 +33,8 @@
         });
 
         async function beginTrials() {
-            const essayJson = await loadEssayJson();
-            const aitaJson = await loadAitaJson();
-
-            const timeline = createTimeline(essayJson, aitaJson);
+            const allJson = await loadJson();
+            const timeline = createTimeline(allJson);
 
             return timeline;
         }
@@ -55,7 +55,7 @@
     <div class="top-bar">
         <div class="brand">
             <div class="brand-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" 
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                     fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
                     <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>

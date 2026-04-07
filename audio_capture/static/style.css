@@ -44,7 +44,7 @@ p, ul, .jspsych-content {
 .brand-icon {
     width: 2.5rem;
     height: 2.5rem;
-    background-color: #4f46e5;
+    background-color: var(--base_colour);
     border-radius: 0.75rem;
     display: flex;
     align-items: center;
@@ -57,7 +57,7 @@ p, ul, .jspsych-content {
     font-size: 1.7em;
     font-weight: 700;
     letter-spacing: -0.02em;
-    color: #4f46e5;
+    color: var(--base_colour);
 }
 
 .step-indicator {
@@ -70,7 +70,7 @@ p, ul, .jspsych-content {
 }
 
 .step-indicator .active {
-    color: #4f46e5;
+    color: var(--base_colour);
 }
 
 .step-indicator .sep {
@@ -180,7 +180,7 @@ p, ul, .jspsych-content {
 }
 
 .worker-input:focus {
-    border-color: #4f46e5;
+    border-color: var(--base_colour);
     box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
 }
 
@@ -199,7 +199,7 @@ p, ul, .jspsych-content {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #4f46e5;
+    background-color: var(--base_colour);
     color: #ffffff;
     border: none;
     padding: 0.75rem 2rem;
@@ -212,7 +212,7 @@ p, ul, .jspsych-content {
 }
 
 .btn-primary:hover:not(:disabled) {
-    background-color: #4338ca;
+    background-color: var(--base_colour_dark);
 }
 
 .btn-primary:disabled {
@@ -241,7 +241,7 @@ p, ul, .jspsych-content {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #4f46e5;
+    background-color: var(--base_colour);
     color: #ffffff;
     border: none;
     padding: 0.75rem 2rem;
@@ -252,6 +252,10 @@ p, ul, .jspsych-content {
     cursor: pointer;
     transition: background-color 0.15s, opacity 0.15s;
     margin-top: 1em;
+}
+
+.jspsych-btn:hover:not(:disabled) {
+    background-color: var(--base_colour_dark);
 }
 
 #which-mic {
