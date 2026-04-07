@@ -92,7 +92,7 @@ Participants begin at a homepage where the project overview and basic instructio
 
 There are two necessary configuration locations: `main_project/settings.py` and `questions/questions.json`. 
 
-### 1. main_project\settings.py
+### 1. main_project/settings.py
 
 Configurations can be found at the bottom of `settings.py`. Key configuration options:
 - **ALLOWED_HOSTS**: A list of host/domain names the site can serve. Values can be fully qualified names (e.g., "www.example.com") or any subdomain type (e.g., "example.com" or ".example.com")
@@ -104,7 +104,7 @@ Configurations can be found at the bottom of `settings.py`. Key configuration op
 - **BASE_COLOUR_DARK**: Accent to the base colour. Colour displayed when hovering over buttons.
 - **MIN_LEN_TEST** and **MAX_LEN_TEST**: Time lengths (in seconds) for the microphone test before all the trials. No modifications recommended.
 
-### 2. questions\questions.json
+### 2. questions/questions.json
 
 Questions are loaded into the project via a `questions.json` file. A sample file can be found in the `questions` folder titled `questions.json`. An exemplar file can be found in `questions` titled `questions_exemplar.json`. Each trial has a set of mandatory configurations and optional configurations. Trials are displayed in the order.
 
