@@ -236,12 +236,17 @@ async function createTimeline(allJson) {
 
 		if (allJson[i].hasOwnProperty("mc_options")) {
 			var text = {}
-			if (allJson[i]["display"] == "before") {
-				text = await mcBefore(i, trialData, trialJson);
-			} else if (allJson[i]["display"] == "after") {
-				text = await mcAfter(i, trialData, trialJson);
+			if (allJson[i].hasOwnProperty("display")) {
+				if (allJson[i]["display"] == "before") {
+					text = await mcBefore(i, trialData, trialJson);
+				} else if (allJson[i]["display"] == "after") {
+					text = await mcAfter(i, trialData, trialJson);
+				}
+				else {
+					text = await mcBefore(i, trialData, trialJson);	
+				}
 			} else {
-				// TODO
+				text = await mcBefore(i, trialData, trialJson);	
 			}
 
 			var instruction = {
@@ -285,20 +290,20 @@ async function createTimeline(allJson) {
 					},
 				],
 				on_finish: function (data) {
-					// fetch('/save_audio/', {
-					// 	method: 'POST',
-					// 	headers: {
-					// 		'Content-Type': 'application/json',
-					// 		'X-CSRFToken': getCookie('csrftoken'),
-					// 	},
-					// 	body: JSON.stringify({
-					// 		audio_base64: trialAudio,
-					// 		label: data.response.label,
-					// 		trial_name: trialData['trial_name'],
-					// 		trial_id: trialJson['id'],
-					// 	}),
-					// });
-					// trialAudio = null;
+					fetch('/save_audio/', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-CSRFToken': getCookie('csrftoken'),
+						},
+						body: JSON.stringify({
+							audio_base64: trialAudio,
+							label: data.response.label,
+							trial_name: trialData['trial_name'],
+							trial_id: trialJson['id'],
+						}),
+					});
+					trialAudio = null;
 				},
 			};
 
@@ -307,13 +312,18 @@ async function createTimeline(allJson) {
 			timeline.push(choice);
 		} else {
 			var text = {};
-			if (allJson[i]['display'] == 'before') {
-				text = await baseBefore(i, trialData, trialJson);
-			} else if (allJson[i]['display'] == 'after') {
-				text = await baseAfter(i, trialData, trialJson);
+			if (allJson[i].hasOwnProperty('display')) {
+				if (allJson[i]['display'] == 'before') {
+					text = await baseBefore(i, trialData, trialJson);
+				} else if (allJson[i]['display'] == 'after') {
+					text = await baseAfter(i, trialData, trialJson);
+				} else {
+					text = await baseBefore(i, trialData, trialJson);
+				}
 			} else {
-				// TODO
+				text = await baseBefore(i, trialData, trialJson);
 			}
+
 			var instruction = {
 				type: jsPsychHtmlButtonResponse,
 				stimulus: text["instruction_text"],
@@ -337,32 +347,32 @@ async function createTimeline(allJson) {
 					});
 				},
 				on_finish: function (data) {
-				// 	if (timerInterval) {
-				// 		clearInterval(timerInterval);
-				// 	}
+					if (timerInterval) {
+						clearInterval(timerInterval);
+					}
 
-				// 	fetch('/save_audio/', {
-				// 		method: 'POST',
-				// 		headers: {
-				// 			'Content-Type': 'application/json',
-				// 			'X-CSRFToken': getCookie('csrftoken'),
-				// 		},
-				// 		body: JSON.stringify({
-				// 			audio_base64: data.response,
-				// 			trial_name: trialData['trial_name'],
-				// 			trial_id: trialJson['id'],
-				// 		}),
-				// 	})
-				// 		.then((response) => {
-				// 			console.log('Response status:', response.status); // Debug log
-				// 			return response.json();
-				// 		})
-				// 		.then((data) => {
-				// 			console.log('Success:', data);
-				// 		})
-				// 		.catch((error) => {
-				// 			console.error('Error:', error);
-				// 		});
+					fetch('/save_audio/', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-CSRFToken': getCookie('csrftoken'),
+						},
+						body: JSON.stringify({
+							audio_base64: data.response,
+							trial_name: trialData['trial_name'],
+							trial_id: trialJson['id'],
+						}),
+					})
+						.then((response) => {
+							console.log('Response status:', response.status); // Debug log
+							return response.json();
+						})
+						.then((data) => {
+							console.log('Success:', data);
+						})
+						.catch((error) => {
+							console.error('Error:', error);
+						});
 				},
 			};	
 

@@ -14,7 +14,7 @@ def homepage(request):
         request.session['crowdworker_id'] = request.POST.get('id')
         return redirect('annotation')
     context = {
-        'task_name': settings.ANNOTATION_TASK_NAME,
+        'task_name': settings.PROJECT_NAME,
         'intro_text': settings.INTRODUCTION_TEXT,
         'colour': settings.BASE_COLOUR,
         'colour_dark': settings.BASE_COLOUR_DARK

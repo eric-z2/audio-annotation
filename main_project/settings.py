@@ -136,20 +136,24 @@ MEDIA_ROOT = BASE_DIR / 'audio_storage'
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
+"""
+==================== SETTINGS.PY CONFIGURATION SETTINGS BELOW ==================== 
+PLEASE MODIFY AS YOU SEE FIT
+"""
 
 # Modify trusted hosts here
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 CSRF_TRUSTED_ORIGINS = []
 
-# Annotation Tool Settings
-ANNOTATION_TASK_NAME = 'Perspectivism Audio Annotation'
-INTRODUCTION_TEXT = 'Your task is to record two audio responses for two questions: an essay question and a Reddit post from the forum r/AmITheAsshole. The task is designed to take 15 minutes including preparation and response time. Additional details will be provided.'
+# Main page and ending page display text
+PROJECT_NAME = 'Audio Annotation'
+INTRODUCTION_TEXT = 'Your task is to record two audio responses for two questions. Additional details will be provided.'
 ENDING_TEXT = 'You have reached the end of the task, thank you for participating!'
 
-# Design
+# Design configurations
 BASE_COLOUR = "#4f46e5"
 BASE_COLOUR_DARK = "#2e22b3"
 
-# Time settings in seconds
-MIN_LEN_TEST = 1
+# Time settings in seconds (no modification recommended)
+MIN_LEN_TEST = 5
 MAX_LEN_TEST = 10
