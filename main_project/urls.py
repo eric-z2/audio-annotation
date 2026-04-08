@@ -19,5 +19,5 @@ from django.urls import include, path
 
 urlpatterns = [
     path('', include('audio_capture.urls')),
-    path('admin/', admin.site.urls),
+    path('annotation/admin/', admin.site.urls),
 ]

@@ -42,7 +42,7 @@ def save_audio(request):
         try:
             data = json.loads(request.body)
             audio_data = data.get('audio_base64') 
-            date = datetime.datetime.now()
+            date = datetime.datetime.now().strftime("%Y-%m-%d")
             crowdworker_id = request.session.get('crowdworker_id', 'unknown')
             trial_name = data.get('trial_name')
             trial_id = data.get('trial_id')

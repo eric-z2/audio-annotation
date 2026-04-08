@@ -41,7 +41,7 @@ async function baseBefore(i, trialData, trialJson) {
 			<br>
 			<div class='recording'>
 				<h2 class='recording-title'>Recoring in Progress</h2>
-				<p>Required duration remaining: <strong><span id="clock"></span></strong></p>
+                <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 			</div>
 	`;
 
@@ -78,7 +78,7 @@ async function baseAfter(i, trialData, trialJson) {
 			<br>
 			<div class='recording'>
 				<h2 class='recording-title'>Recoring in Progress</h2>
-				<p>Required duration remaining: <strong><span id="clock"></span></strong></p>
+                <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 			</div>
 	`;
 
@@ -120,7 +120,7 @@ async function mcBefore(i, trialData, trialJson) {
 		<br>
 		<div class='recording'>
 			<h2 class='recording-title'>Recoring in Progress</h2>
-			<p>Required duration remaining: <strong><span id="clock"></span></strong></p>
+            <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
 	
@@ -158,7 +158,7 @@ async function mcAfter(i, trialData, trialJson) {
 		<br>
 		<div class='recording'>
 			<h2 class='recording-title'>Recoring in Progress</h2>
-			<p>Required duration remaining: <strong><span id="clock"></span></strong></p>
+            <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
 	
@@ -208,18 +208,18 @@ async function createTimeline(allJson) {
             </div>
             <div class='recording'>
                 <h2 class='recording-title'>Recoring in Progress</h2>
-                <p>Required duration remaining: <strong><span id="clock"></span></strong></p>
+                <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
             </div>
             `,
-		recording_duration: MAX_LEN_TEST * 1000,
+		recording_duration: MAX_LEN_TEST * 1000 + 1000,
 		allow_playback: true,
 		done_button_label: 'Finish',
 		on_load: function () {
-			startTimer(MIN_LEN_TEST);
+			startTimer(MIN_LEN_TEST, MAX_LEN_TEST);
 
 			document.addEventListener('click', function (e) {
 				if (e.target.id == 'record-again') {
-					startTimer(MIN_LEN_TEST);
+					startTimer(MIN_LEN_TEST, MAX_LEN_TEST);
 				}
 			});
 		},
@@ -258,16 +258,17 @@ async function createTimeline(allJson) {
 			var trial = {
 				type: jsPsychHtmlAudioResponse,
 				stimulus: text["trial_text"],
-				recording_duration: trialData['max_time'] * 1000,
+				recording_duration: trialData['max_time'] * 1000 + 1000,
 				allow_playback: true,
 				done_button_label: 'Finish',
 				on_load: function () {
 					var minTime = trialData['min_time'];
-					startTimer(minTime);
+					var maxTime = trialData['max_time'];
+					startTimer(minTime, maxTime);
 
 					document.addEventListener('click', function (e) {
 						if (e.target.id == 'record-again') {
-							startTimer(minTime);
+							startTimer(minTime, maxTime);
 						}
 					});
 				},
@@ -290,7 +291,7 @@ async function createTimeline(allJson) {
 					},
 				],
 				on_finish: function (data) {
-					fetch('/save_audio/', {
+					fetch('save_audio/', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
@@ -333,16 +334,17 @@ async function createTimeline(allJson) {
 			var trial = {
 				type: jsPsychHtmlAudioResponse,
 				stimulus: text["trial_text"],
-				recording_duration: trialData['max_time'] * 1000,
+				recording_duration: trialData['max_time'] * 1000 + 1000,
 				allow_playback: true,
 				done_button_label: 'Finish',
 				on_load: function () {
 					var minTime = trialData['min_time'];
-					startTimer(minTime);
+					var maxTime = trialData['max_time'];
+					startTimer(minTime, maxTime);
 
 					document.addEventListener('click', function (e) {
 						if (e.target.id == 'record-again') {
-							startTimer(minTime);
+							startTimer(minTime, maxTime);
 						}
 					});
 				},
@@ -351,7 +353,7 @@ async function createTimeline(allJson) {
 						clearInterval(timerInterval);
 					}
 
-					fetch('/save_audio/', {
+					fetch('save_audio/', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
