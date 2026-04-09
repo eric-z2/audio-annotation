@@ -117,6 +117,8 @@ Questions are loaded into the project via a `questions.json` file. A sample file
 
 #### Optional configurations
 - **display**: When the question is displayed to the participant. Two possible options: "before" and "after." "Before" displays the question before the timer starts. "After" displays the question after the timer starts. Default is "before."
+- **repetitions**: The number of times a single trial will be repeated. The default is 1.
+- **selection**: How the questions are selected out of the pool of questions. Two possible options: "sequential" and "random." Default is "random."
 - **mc_options**: Multiple choice options that will appear after a trial. These will be stored with the trial in the database. A sample use case is participants annotating r/AmITheAsshole forum where multiple choice options represents their final verdict (e.g., NTA (Not the asshole), YTA (You're the asshole), etc.).
 
 ## Project Structure

@@ -31,6 +31,7 @@ def annotation(request):
                 'max_len_test': settings.MAX_LEN_TEST,
             }
         ],
+        'task_name': settings.PROJECT_NAME,
         'end_text': settings.ENDING_TEXT,
         'colour': settings.BASE_COLOUR,
         'colour_dark': settings.BASE_COLOUR_DARK

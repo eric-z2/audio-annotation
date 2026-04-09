@@ -3,6 +3,8 @@
 		"trial_name": "Sample Trial", 
 		"instructions": "This is a sample trial. Instructions for the first sample trial should go here. Include any necessary information including guidelines and general content. This will be displayed to the user as soon as they enter the trial.",
 		"display": "before",
+        "repetitions": 1,
+        "selection": "sequential",
         "min_time": 10,
         "max_time": 360,
         "questions": [
@@ -17,25 +19,27 @@
 		]
 	},
     {
-        "trial_name": "Sample Trial",
-        "instructions": "This is a sample trial. Instructions for the first sample trial should go here. Include any necessary information including guidelines and general content. This will be displayed to the user as soon as they enter the trial.",
-        "mc_options": ["Choice 1", "Choice 2", "Choice 3", "Choice 4"],
-        "display": "after",
-        "min_time": 10,
-        "max_time": 240,
-        "questions": [
-            {
-                "id": 1,
-                "question": "Here is the first question."
-            },
-            {
-                "id": 2,
-                "question": "Here is the second question."
-            },
-            {
-                "id": 3,
-                "question": "Here is the third question."
-            }
-        ]
-    }
+		"trial_name": "Sample Trial",
+		"instructions": "This is a sample trial. Instructions for the first sample trial should go here. Include any necessary information including guidelines and general content. This will be displayed to the user as soon as they enter the trial.",
+		"mc_options": ["Choice 1", "Choice 2", "Choice 3", "Choice 4"],
+		"display": "after",
+		"repetitions": 3,
+		"selection": "sequential",
+		"min_time": 10,
+		"max_time": 240,
+		"questions": [
+			{
+				"id": 1,
+				"question": "Here is the first question."
+			},
+			{
+				"id": 2,
+				"question": "Here is the second question."
+			},
+			{
+				"id": 3,
+				"question": "Here is the third question."
+			}
+		]
+	}
 ]
