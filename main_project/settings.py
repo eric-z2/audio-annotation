@@ -122,7 +122,7 @@ STATIC_URL = '/annotation/static/'
 STATIC_ROOT = '/var/www/audio-annotation/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'audio_capture/static',
-    BASE_DIR / "questions"
+    BASE_DIR / 'questions'
 ]
 
 # Default primary key field type
