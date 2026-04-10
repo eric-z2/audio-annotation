@@ -168,6 +168,25 @@ async function mcAfter(i, trialData, trialJson) {
 	}
 }
 
+// Source - https://stackoverflow.com/a/2450976
+// Posted by ChristopheD, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-04-09, License - CC BY-SA 4.0
+async function shuffle(array) {
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+}
+
 async function createTimeline(allJson) {
 	var timeline = [];
 
@@ -229,157 +248,143 @@ async function createTimeline(allJson) {
 	timeline.push(mic_test);
 	timeline.push(mic_test_trial);
 
-	for (let i = 0; i < allJson.length; i++) {
-		let randEntry = Math.floor(Math.random() * allJson[i]['questions'].length);
-		const trialJson = allJson[i]['questions'][randEntry];
+    for (let i = 0; i < allJson.length; i++) {
 		const trialData = allJson[i];
+		const { repetitions = 1 } = trialData;
+		const questions = trialData['selection'] == 'sequential'
+			? trialData['questions']
+			: await shuffle(trialData['questions'])
 
-		if (allJson[i].hasOwnProperty("mc_options")) {
-			var text = {}
-			if (allJson[i].hasOwnProperty("display")) {
-				if (allJson[i]["display"] == "before") {
-					text = await mcBefore(i, trialData, trialJson);
-				} else if (allJson[i]["display"] == "after") {
-					text = await mcAfter(i, trialData, trialJson);
-				}
-				else {
-					text = await mcBefore(i, trialData, trialJson);	
-				}
-			} else {
-				text = await mcBefore(i, trialData, trialJson);	
-			}
+		for (let j = 0; j < Math.min(repetitions, questions.length); j++) {
+			const trialJson = questions[j];
 
-			var instruction = {
-				type: jsPsychHtmlButtonResponse,
-				stimulus: text["instruction_text"],
-				choices: ['Begin'],
-			};
+			if (trialData.hasOwnProperty('mc_options')) {
+				const text = trialData.display == 'after'
+					? await mcAfter(i, trialData, trialJson)
+					: await mcBefore(i, trialData, trialJson);
 
-			var trial = {
-				type: jsPsychHtmlAudioResponse,
-				stimulus: text["trial_text"],
-				recording_duration: trialData['max_time'] * 1000 + 1000,
-				allow_playback: true,
-				done_button_label: 'Finish',
-				on_load: function () {
-					var minTime = trialData['min_time'];
-					var maxTime = trialData['max_time'];
-					startTimer(minTime, maxTime);
+				var instruction = {
+					type: jsPsychHtmlButtonResponse,
+					stimulus: text['instruction_text'],
+					choices: ['Begin'],
+				};
 
-					document.addEventListener('click', function (e) {
-						if (e.target.id == 'record-again') {
-							startTimer(minTime, maxTime);
-						}
-					});
-				},
-				on_finish: function (data) {
-					if (timerInterval) {
-						clearInterval(timerInterval);
-					}
-					trialAudio = data.response;
-				},
-			};
+				var trial = {
+					type: jsPsychHtmlAudioResponse,
+					stimulus: text['trial_text'],
+					recording_duration: trialData['max_time'] * 1000 + 1000,
+					allow_playback: true,
+					done_button_label: 'Finish',
+					on_load: function () {
+						var minTime = trialData['min_time'];
+						var maxTime = trialData['max_time'];
+						startTimer(minTime, maxTime);
 
-			var choice = {
-				type: jsPsychSurveyMultiChoice,
-				questions: [
-					{
-						prompt: 'What was your final judgement?',
-						name: 'label',
-						options: trialData['mc_options'],
-						required: true,
-					},
-				],
-				on_finish: function (data) {
-					fetch('save_audio/', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							'X-CSRFToken': getCookie('csrftoken'),
-						},
-						body: JSON.stringify({
-							audio_base64: trialAudio,
-							label: data.response.label,
-							trial_name: trialData['trial_name'],
-							trial_id: trialJson['id'],
-						}),
-					});
-					trialAudio = null;
-				},
-			};
-
-			timeline.push(instruction);
-			timeline.push(trial);
-			timeline.push(choice);
-		} else {
-			var text = {};
-			if (allJson[i].hasOwnProperty('display')) {
-				if (allJson[i]['display'] == 'before') {
-					text = await baseBefore(i, trialData, trialJson);
-				} else if (allJson[i]['display'] == 'after') {
-					text = await baseAfter(i, trialData, trialJson);
-				} else {
-					text = await baseBefore(i, trialData, trialJson);
-				}
-			} else {
-				text = await baseBefore(i, trialData, trialJson);
-			}
-
-			var instruction = {
-				type: jsPsychHtmlButtonResponse,
-				stimulus: text["instruction_text"],
-				choices: ['Begin'],
-			};
-
-			var trial = {
-				type: jsPsychHtmlAudioResponse,
-				stimulus: text["trial_text"],
-				recording_duration: trialData['max_time'] * 1000 + 1000,
-				allow_playback: true,
-				done_button_label: 'Finish',
-				on_load: function () {
-					var minTime = trialData['min_time'];
-					var maxTime = trialData['max_time'];
-					startTimer(minTime, maxTime);
-
-					document.addEventListener('click', function (e) {
-						if (e.target.id == 'record-again') {
-							startTimer(minTime, maxTime);
-						}
-					});
-				},
-				on_finish: function (data) {
-					if (timerInterval) {
-						clearInterval(timerInterval);
-					}
-
-					fetch('save_audio/', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							'X-CSRFToken': getCookie('csrftoken'),
-						},
-						body: JSON.stringify({
-							audio_base64: data.response,
-							trial_name: trialData['trial_name'],
-							trial_id: trialJson['id'],
-						}),
-					})
-						.then((response) => {
-							console.log('Response status:', response.status); // Debug log
-							return response.json();
-						})
-						.then((data) => {
-							console.log('Success:', data);
-						})
-						.catch((error) => {
-							console.error('Error:', error);
+						document.addEventListener('click', function (e) {
+							if (e.target.id == 'record-again') {
+								startTimer(minTime, maxTime);
+							}
 						});
-				},
-			};	
+					},
+					on_finish: function (data) {
+						if (timerInterval) {
+							clearInterval(timerInterval);
+						}
+						trialAudio = data.response;
+					},
+				};
 
-			timeline.push(instruction);
-			timeline.push(trial);
+				var choice = {
+					type: jsPsychSurveyMultiChoice,
+					questions: [
+						{
+							prompt: 'What was your final judgement?',
+							name: 'label',
+							options: trialData['mc_options'],
+							required: true,
+						},
+					],
+					on_finish: function (data) {
+						fetch('save_audio/', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								'X-CSRFToken': getCookie('csrftoken'),
+							},
+							body: JSON.stringify({
+								audio_base64: trialAudio,
+								label: data.response.label,
+								trial_name: trialData['trial_name'] + "_" + i,
+								trial_id: trialJson['id'],
+							}),
+						});
+						trialAudio = null;
+					},
+				};
+
+				timeline.push(instruction);
+				timeline.push(trial);
+				timeline.push(choice);
+			} else {
+				const text = trialData.display == 'after'
+					? await mcAfter(i, trialData, trialJson)
+					: await mcBefore(i, trialData, trialJson);
+
+				var instruction = {
+					type: jsPsychHtmlButtonResponse,
+					stimulus: text['instruction_text'],
+					choices: ['Begin'],
+				};
+
+				var trial = {
+					type: jsPsychHtmlAudioResponse,
+					stimulus: text['trial_text'],
+					recording_duration: trialData['max_time'] * 1000 + 1000,
+					allow_playback: true,
+					done_button_label: 'Finish',
+					on_load: function () {
+						var minTime = trialData['min_time'];
+						var maxTime = trialData['max_time'];
+						startTimer(minTime, maxTime);
+
+						document.addEventListener('click', function (e) {
+							if (e.target.id == 'record-again') {
+								startTimer(minTime, maxTime);
+							}
+						});
+					},
+					on_finish: function (data) {
+						if (timerInterval) {
+							clearInterval(timerInterval);
+						}
+						fetch('save_audio/', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								'X-CSRFToken': getCookie('csrftoken'),
+							},
+							body: JSON.stringify({
+								audio_base64: data.response,
+								trial_name: trialData['trial_name'] + "_" + i,
+								trial_id: trialJson['id'],
+							}),
+						})
+							.then((response) => {
+								console.log('Response status:', response.status); // Debug log
+								return response.json();
+							})
+							.then((data) => {
+								console.log('Success:', data);
+							})
+							.catch((error) => {
+								console.error('Error:', error);
+							});
+					},
+				};
+
+				timeline.push(instruction);
+				timeline.push(trial);
+			}
 		}
 	}
 
