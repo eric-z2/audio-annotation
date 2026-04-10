@@ -19,7 +19,7 @@
     {
         "trial_name": "AITA Annotation",
         "instructions": "Your task is to read and analyze a post from the Reddit forum r/AmITheAsshole. In this forum, each author describes a situation or interpersonal conflict that they were involved in and ask if they did something wrong or not, i.e., AITA; \"am I the asshole\"? For each situation, answer the question \"Is the author the asshole in this situation?\" Here are the possible answers you may provide: <strong>NTA (Not the Asshole)</strong>: The author did nothing wrong, <strong>YTA (You're the Asshole)</strong>: The author did something wrong, <strong>ESH (Everyone sucks here)</strong>: Everyone did something wrong, or <strong>NAH (No Assholes)</strong>: No one did anything wrong. <br> Please use your best judgement based on the given information and limit your response to only one of these options.<br><br> The post will be displayed after clicking 'Begin' and you will have three minutes to speak and read. As you are reading the post, please speak your thoughts, reasoning, and your conclusion out loud. You will have an additional minute after the three minutes to wrap up your thoughts.",
-        "mc_options": ["NTA (Not the asshole)", "YTA (You're the asshole)", "ESH (Everyone sucks here)", "NAH (No one's the asshole)"],
+        "mc_options": ["NTA (Not the asshole)", "YTA (You're the asshole)"],
         "display": "after",
         "min_time": 5,
         "max_time": 240,
