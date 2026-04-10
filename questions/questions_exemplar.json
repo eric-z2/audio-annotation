@@ -10,7 +10,7 @@
         "questions": [
 			{
 				"id": "1",
-				"question": "For the next 6 minutes (or more), write about your central and most important values that guide your life. Really stand back and explore your deepest thoughts and feelings about your basic values. You might think about the types of guiding principles that you use to make difficult decisions, interact with other people, and determine the things that are important in your life and the lives of those around you. Try to describe each of these values and their relationship to who you are. Once you begin speaking, try to speak continuously until time runs out."
+				"question": "For the next 6 minutes (or more), talk about your central and most important values that guide your life. Really stand back and explore your deepest thoughts and feelings about your basic values. You might think about the types of guiding principles that you use to make difficult decisions, interact with other people, and determine the things that are important in your life and the lives of those around you. Try to describe each of these values and their relationship to who you are. Once you begin speaking, try to speak continuously until time runs out."
 			},
 			{
 				"id": "2",
@@ -20,7 +20,7 @@
 	},
     {
         "trial_name": "AITA Annotation",
-        "instructions": "Your task is to read and analyze a post from the Reddit forum r/AmITheAsshole. In this forum, each author describes a situation or interpersonal conflict that they were involved in and ask if they did something wrong or not, i.e., AITA; \"am I the asshole\"? For each situation, answer the question \"Is the author the asshole in this situation?\" Here are the possible answers you may provide: <strong>NTA (Not the Asshole)</strong>: The author did nothing wrong, <strong>YTA (You're the Asshole)</strong>: The author did something wrong, <strong>ESH (Everyone sucks here)</strong>: Everyone did something wrong, or <strong>NAH (No Assholes)</strong>: No one did anything wrong. <br> Please use your best judgement based on the given information and limit your response to only one of these options.<br><br> The post will be displayed after clicking 'Begin' and you will have three minutes to speak and read. As you are reading the post, please speak your thoughts, reasoning, and your conclusion out loud. You will have an additional minute after the three minutes to wrap up your thoughts.",
+        "instructions": "Your task is to read and analyze a post from the Reddit forum r/AmITheAsshole. In this forum, each author describes a situation or interpersonal conflict that they were involved in and ask if they did something wrong or not, i.e., AITA; \"am I the asshole\"? For each situation, answer the question \"Is the author the asshole in this situation?\" Here are the possible answers you may provide: <strong>NTA (Not the Asshole)</strong>: The author did nothing wrong, or <strong>YTA (You're the Asshole)</strong>: The author did something wrong. <br> Please use your best judgement based on the given information and limit your response to only one of these options.<br><br> The post will be displayed after clicking 'Begin' and you will have three minutes to speak and read. As you are reading the post, please speak your thoughts, reasoning, and your conclusion out loud. You will have an additional minute after the three minutes to wrap up your thoughts.",
         "mc_options": ["NTA (Not the asshole)", "YTA (You're the asshole)"],
         "display": "after",
         "repetitions": 3,
