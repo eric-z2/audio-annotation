@@ -3,7 +3,7 @@ const MAX_LEN_TEST = JSON.parse(document.getElementById('lengths').textContent)[
 const ENDING_TEXT = JSON.parse(document.getElementById('end_text').textContent);
 
 async function loadJson() {
-	var response = await fetch('/static/questions.json');
+	var response = await fetch('/annotation/static/questions_exemplar.json');
 	var json = await response.json();
 
 	return json;
