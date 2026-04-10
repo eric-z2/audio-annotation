@@ -58,12 +58,12 @@ Create a `.env` file in the project root:
 touch .env
 ```
 
-Generate a secret key and copy the output:
+Run the following script and copy the output:
 ```bash
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
-Add the key to your `.env` file:
+Create a .env file and add the following line:
 ```
 SECRET_KEY='secret-key-goes-here'
 ```

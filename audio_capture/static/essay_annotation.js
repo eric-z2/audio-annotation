@@ -9,9 +9,9 @@ async function loadJson() {
 	return json;
 }
 
-async function baseBefore(i, trialData, trialJson) {
+async function baseBefore(i, j, repetitions, trialData, trialJson) {
 	var instruction_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
 		<div class="section">
 			<p>
 				${trialData['instructions']}
@@ -28,21 +28,21 @@ async function baseBefore(i, trialData, trialJson) {
 	`;
 
 	var trial_text = `
-			<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
-			<div class="section">
-				<p>
-					${trialData['instructions']}
-				</p>
-			</div>
-			<h2 class="section-label"> Prompt </h2>
-			<p class='emphasize'>
-				${trialJson['question']}
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
+		<div class="section">
+			<p>
+				${trialData['instructions']}
 			</p>
-			<br>
-			<div class='recording'>
-				<h2 class='recording-title'>Recoring in Progress</h2>
-                <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
-			</div>
+		</div>
+		<h2 class="section-label"> Prompt </h2>
+		<p class='emphasize'>
+			${trialJson['question']}
+		</p>
+		<br>
+		<div class='recording'>
+			<h2 class='recording-title'>Recoring in Progress</h2>
+			<p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
+		</div>
 	`;
 
 	return {
@@ -51,9 +51,9 @@ async function baseBefore(i, trialData, trialJson) {
 	};
 }
 
-async function baseAfter(i, trialData, trialJson) {
+async function baseAfter(i, j, repetitions, trialData, trialJson) {
 	var instruction_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
 		<div class="section">
 			<p>
 				${trialData['instructions']}
@@ -65,32 +65,32 @@ async function baseAfter(i, trialData, trialJson) {
 	`;
 
 	var trial_text = `
-			<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
-			<div class="section">
-				<p>
-					${trialData['instructions']}
-				</p>
-			</div>
-			<h2 class="section-label"> Prompt </h2>
-			<p class='emphasize'>
-				${trialJson['question']}
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
+		<div class="section">
+			<p>
+				${trialData['instructions']}
 			</p>
-			<br>
-			<div class='recording'>
-				<h2 class='recording-title'>Recoring in Progress</h2>
-                <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
-			</div>
+		</div>
+		<h2 class="section-label"> Prompt </h2>
+		<p class='emphasize'>
+			${trialJson['question']}
+		</p>
+		<br>
+		<div class='recording'>
+			<h2 class='recording-title'>Recoring in Progress</h2>
+			<p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
+		</div>
 	`;
 
 	return {
-		"instruction_text": instruction_text,
-		"trial_text": trial_text
+		instruction_text: instruction_text,
+		trial_text: trial_text,
 	};
 }
 
-async function mcBefore(i, trialData, trialJson) {
+async function mcBefore(i, j, repetitions, trialData, trialJson) {
 	var instruction_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
 		<div class="section">
 			<p>
 				${trialData['instructions']}
@@ -105,9 +105,9 @@ async function mcBefore(i, trialData, trialJson) {
 			Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
 		</p>
 	`;
-	
+
 	var trial_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
 		<div class="section">
 			<p>
 				${trialData['instructions']}
@@ -123,16 +123,16 @@ async function mcBefore(i, trialData, trialJson) {
             <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
-	
+
 	return {
-		"instruction_text": instruction_text,
-		"trial_text": trial_text
+		instruction_text: instruction_text,
+		trial_text: trial_text,
 	};
 }
 
-async function mcAfter(i, trialData, trialJson) {
+async function mcAfter(i, j, repetitions, trialData, trialJson) {
 	var instruction_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
 		<div class="section">
 			<p>
 				${trialData['instructions']}
@@ -143,9 +143,9 @@ async function mcAfter(i, trialData, trialJson) {
 			Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
 		</p>
 	`;
-	
+
 	var trial_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']}</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
 		<div class="section">
 			<p>
 				${trialData['instructions']}
@@ -161,11 +161,11 @@ async function mcAfter(i, trialData, trialJson) {
             <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
-	
+
 	return {
-		"instruction_text": instruction_text,
-		"trial_text": trial_text
-	}
+		instruction_text: instruction_text,
+		trial_text: trial_text,
+	};
 }
 
 // Source - https://stackoverflow.com/a/2450976
@@ -250,18 +250,18 @@ async function createTimeline(allJson) {
 
     for (let i = 0; i < allJson.length; i++) {
 		const trialData = allJson[i];
-		const { repetitions = 1 } = trialData;
-		const questions = trialData['selection'] == 'sequential'
-			? trialData['questions']
-			: await shuffle(trialData['questions'])
+		const { repetitions = 1, questions: rawQuestions = [] } = trialData;
+		const questions = trialData.selection == 'sequential'
+			? rawQuestions
+			: shuffle([...rawQuestions]);
 
 		for (let j = 0; j < Math.min(repetitions, questions.length); j++) {
 			const trialJson = questions[j];
 
 			if (trialData.hasOwnProperty('mc_options')) {
 				const text = trialData.display == 'after'
-					? await mcAfter(i, trialData, trialJson)
-					: await mcBefore(i, trialData, trialJson);
+					? await mcAfter(i, j, repetitions, trialData, trialJson)
+					: await mcBefore(i, j, repetitions, trialData, trialJson);
 
 				var instruction = {
 					type: jsPsychHtmlButtonResponse,
@@ -327,8 +327,8 @@ async function createTimeline(allJson) {
 				timeline.push(choice);
 			} else {
 				const text = trialData.display == 'after'
-					? await mcAfter(i, trialData, trialJson)
-					: await mcBefore(i, trialData, trialJson);
+					? await baseAfter(i, j, repetitions, trialData, trialJson)
+					: await baseBefore(i, j, repetitions, trialData, trialJson);
 
 				var instruction = {
 					type: jsPsychHtmlButtonResponse,
