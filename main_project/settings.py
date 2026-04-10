@@ -118,9 +118,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/annotation/static/'
+STATIC_ROOT = '/var/www/audio-annotation/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'staticfiles',
+    BASE_DIR / 'audio_capture/static',
     BASE_DIR / "questions"
 ]
 
@@ -142,8 +143,8 @@ PLEASE MODIFY AS YOU SEE FIT
 """
 
 # Modify trusted hosts here
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-CSRF_TRUSTED_ORIGINS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'nlp.cas.mcmaster.ca']
+CSRF_TRUSTED_ORIGINS = ['https://nlp.cas.mcmaster.ca']
 
 # Main page and ending page display text
 PROJECT_NAME = 'Audio Annotation'
