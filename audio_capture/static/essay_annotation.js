@@ -40,7 +40,7 @@ async function baseBefore(i, j, repetitions, trialData, trialJson) {
 		</p>
 		<br>
 		<div class='recording'>
-			<h2 class='recording-title'>Recoring in Progress</h2>
+			<h2 class='recording-title'>Recording in Progress</h2>
 			<p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
@@ -77,7 +77,7 @@ async function baseAfter(i, j, repetitions, trialData, trialJson) {
 		</p>
 		<br>
 		<div class='recording'>
-			<h2 class='recording-title'>Recoring in Progress</h2>
+			<h2 class='recording-title'>Recording in Progress</h2>
 			<p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
@@ -119,7 +119,7 @@ async function mcBefore(i, j, repetitions, trialData, trialJson) {
 		</p>
 		<br>
 		<div class='recording'>
-			<h2 class='recording-title'>Recoring in Progress</h2>
+			<h2 class='recording-title'>Recording in Progress</h2>
             <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
@@ -157,7 +157,7 @@ async function mcAfter(i, j, repetitions, trialData, trialJson) {
 		</p>
 		<br>
 		<div class='recording'>
-			<h2 class='recording-title'>Recoring in Progress</h2>
+			<h2 class='recording-title'>Recording in Progress</h2>
             <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
@@ -226,7 +226,7 @@ async function createTimeline(allJson) {
                 </p>
             </div>
             <div class='recording'>
-                <h2 class='recording-title'>Recoring in Progress</h2>
+                <h2 class='recording-title'>Recording in Progress</h2>
                 <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
             </div>
             `,
