@@ -1,12 +1,59 @@
 const MIN_LEN_TEST = JSON.parse(document.getElementById('lengths').textContent)[0]['min_len_test'];
 const MAX_LEN_TEST = JSON.parse(document.getElementById('lengths').textContent)[0]['max_len_test'];
 const ENDING_TEXT = JSON.parse(document.getElementById('end_text').textContent);
+const RECORDING_COUNTDOWN_SECONDS = 3;
 
 async function loadJson() {
 	var response = await fetch('/annotation/static/questions_exemplar.json');
 	var json = await response.json();
 
 	return json;
+}
+
+function createBeginTrial(stimulus) {
+	return {
+		type: jsPsychHtmlButtonResponse,
+		stimulus: `
+			${stimulus}
+			<div class="recording" id="recording-countdown" hidden>
+				<p class="recording-title">
+					Recording will start in <strong><span id="countdown-clock">${RECORDING_COUNTDOWN_SECONDS}</span></strong>
+				</p>
+			</div>
+		`,
+		choices: ['Begin'],
+		response_ends_trial: false,
+		on_load: function () {
+			var beginButton = document.querySelector('.jspsych-btn');
+			var countdown = document.getElementById('recording-countdown');
+			var countdownClock = document.getElementById('countdown-clock');
+
+			if (!beginButton || !countdown || !countdownClock) {
+				return;
+			}
+
+			beginButton.addEventListener('click', function () {
+				countdownStarted = true;
+				var secondsRemaining = RECORDING_COUNTDOWN_SECONDS;
+
+				beginButton.disabled = true;
+				beginButton.textContent = 'Starting...';
+				countdown.hidden = false;
+				countdownClock.textContent = secondsRemaining;
+
+				var countdownInterval = setInterval(function () {
+					secondsRemaining -= 1;
+
+					if (secondsRemaining > 0) {
+						countdownClock.textContent = secondsRemaining;
+					} else {
+						clearInterval(countdownInterval);
+						window.jsPsych.finishTrial();
+					}
+				}, 1000);
+			});
+		},
+	};
 }
 
 async function baseBefore(i, j, repetitions, trialData, trialJson) {
@@ -22,9 +69,6 @@ async function baseBefore(i, j, repetitions, trialData, trialJson) {
 			${trialJson['question']}
 		</p>
 		<br>
-		<p class='recording'>
-			Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
-		</p>
 	`;
 
 	var trial_text = `
@@ -53,15 +97,12 @@ async function baseBefore(i, j, repetitions, trialData, trialJson) {
 
 async function baseAfter(i, j, repetitions, trialData, trialJson) {
 	var instruction_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j + 1} of ${repetitions})</h2>
 		<div class="section">
 			<p>
 				${trialData['instructions']}
 			</p>
 		</div>
-		<p class='recording'>
-			Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
-		</p>
 	`;
 
 	var trial_text = `
@@ -90,7 +131,7 @@ async function baseAfter(i, j, repetitions, trialData, trialJson) {
 
 async function mcBefore(i, j, repetitions, trialData, trialJson) {
 	var instruction_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j + 1} of ${repetitions})</h2>
 		<div class="section">
 			<p>
 				${trialData['instructions']}
@@ -101,9 +142,6 @@ async function mcBefore(i, j, repetitions, trialData, trialJson) {
 			${trialJson['question']}
 		</p>
 		<br>
-		<p class='recording'>
-			Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
-		</p>
 	`;
 
 	var trial_text = `
@@ -120,7 +158,7 @@ async function mcBefore(i, j, repetitions, trialData, trialJson) {
 		<br>
 		<div class='recording'>
 			<h2 class='recording-title'>Recording in Progress</h2>
-            <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
+            <p><span id="req">Duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
 
@@ -132,16 +170,12 @@ async function mcBefore(i, j, repetitions, trialData, trialJson) {
 
 async function mcAfter(i, j, repetitions, trialData, trialJson) {
 	var instruction_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j + 1} of ${repetitions})</h2>
 		<div class="section">
 			<p>
 				${trialData['instructions']}
 			</p>
 		</div>
-
-		<p class='recording'>
-			Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
-		</p>
 	`;
 
 	var trial_text = `
@@ -158,7 +192,7 @@ async function mcAfter(i, j, repetitions, trialData, trialJson) {
 		<br>
 		<div class='recording'>
 			<h2 class='recording-title'>Recording in Progress</h2>
-            <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
+            <p><span id="req">Duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
 
@@ -194,9 +228,7 @@ async function createTimeline(allJson) {
 		type: jsPsychInitializeMicrophone,
 	};
 
-	var mic_test = {
-		type: jsPsychHtmlButtonResponse,
-		stimulus: `
+	var mic_test = createBeginTrial(`
             <h2 class="section-label">Microphone Testing Instructions</h2>
 
             <div class="section">
@@ -206,12 +238,7 @@ async function createTimeline(allJson) {
                     If the audio quality is satisfactory, feel free to begin the trials. If not, we recommend switching devices or attaching an external microphone. This is a self-diagnosed test; <strong>these ten seconds of audio will not be saved.</strong> The trials will operate identically to this test run, so take this opportunity to familiarize yourself with the environment!
                 </p>
             </div>
-            <p class='recording'>
-                Clicking <strong>Begin</strong> will start the recording immediately. Please begin whenever you're ready.
-            </p>
-        `,
-		choices: ['Begin'],
-	};
+        `);
 
 	var mic_test_trial = {
 		type: jsPsychHtmlAudioResponse,
@@ -227,18 +254,18 @@ async function createTimeline(allJson) {
             </div>
             <div class='recording'>
                 <h2 class='recording-title'>Recording in Progress</h2>
-                <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
+                <p><span id="req">Duration remaining</span>: <strong><span id="clock"></span></strong></p>
             </div>
             `,
 		recording_duration: MAX_LEN_TEST * 1000 + 1000,
 		allow_playback: true,
 		done_button_label: 'Finish',
 		on_load: function () {
-			startTimer(MIN_LEN_TEST, MAX_LEN_TEST);
+			startTimer(MIN_LEN_TEST);
 
 			document.addEventListener('click', function (e) {
 				if (e.target.id == 'record-again') {
-					startTimer(MIN_LEN_TEST, MAX_LEN_TEST);
+					startTimer(MIN_LEN_TEST);
 				}
 			});
 		},
@@ -263,11 +290,7 @@ async function createTimeline(allJson) {
 					? await mcAfter(i, j, repetitions, trialData, trialJson)
 					: await mcBefore(i, j, repetitions, trialData, trialJson);
 
-				var instruction = {
-					type: jsPsychHtmlButtonResponse,
-					stimulus: text['instruction_text'],
-					choices: ['Begin'],
-				};
+				var instruction = createBeginTrial(text['instruction_text']);
 
 				var trial = {
 					type: jsPsychHtmlAudioResponse,
@@ -278,11 +301,11 @@ async function createTimeline(allJson) {
 					on_load: function () {
 						var minTime = trialData['min_time'];
 						var maxTime = trialData['max_time'];
-						startTimer(minTime, maxTime);
+						startTimer(minTime);
 
 						document.addEventListener('click', function (e) {
 							if (e.target.id == 'record-again') {
-								startTimer(minTime, maxTime);
+								startTimer(minTime);
 							}
 						});
 					},
@@ -330,11 +353,7 @@ async function createTimeline(allJson) {
 					? await baseAfter(i, j, repetitions, trialData, trialJson)
 					: await baseBefore(i, j, repetitions, trialData, trialJson);
 
-				var instruction = {
-					type: jsPsychHtmlButtonResponse,
-					stimulus: text['instruction_text'],
-					choices: ['Begin'],
-				};
+				var instruction = createBeginTrial(text['instruction_text']);
 
 				var trial = {
 					type: jsPsychHtmlAudioResponse,
@@ -345,11 +364,11 @@ async function createTimeline(allJson) {
 					on_load: function () {
 						var minTime = trialData['min_time'];
 						var maxTime = trialData['max_time'];
-						startTimer(minTime, maxTime);
+						startTimer(minTime);
 
 						document.addEventListener('click', function (e) {
 							if (e.target.id == 'record-again') {
-								startTimer(minTime, maxTime);
+								startTimer(minTime);
 							}
 						});
 					},

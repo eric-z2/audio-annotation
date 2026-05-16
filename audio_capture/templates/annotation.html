@@ -43,6 +43,7 @@
             const jsPsych = initJsPsych({
                 display_element: 'jspsych-target',
             });
+            window.jsPsych = jsPsych;
 
             const timeline = await beginTrials();
 
