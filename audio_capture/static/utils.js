@@ -12,9 +12,12 @@ function startTimer(min_len) {
 
     var wait_time = (min_len + 0.5) * 1000;
     var start_time = performance.now();
+    var btn = null;
+    var timer = null;
 
     setTimeout(() => {
-        var btn = document.querySelector('#finish-trial');
+        btn = document.querySelector('#finish-trial');
+        timer = document.getElementById('req');
         if (btn) btn.disabled = true;
     }, 100);
     
@@ -39,8 +42,8 @@ function startTimer(min_len) {
 
 		if (time_left <= 0) {
 			if (clock) clock.innerHTML = '0:00';
-			var btn = document.querySelector('#finish-trial');
 			if (btn) btn.disabled = false;
+            if (timer) timer.closest('p').style.display = 'none';
 
 			clearInterval(timerInterval);
 		}

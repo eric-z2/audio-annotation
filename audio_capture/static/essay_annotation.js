@@ -17,7 +17,7 @@ function createBeginTrial(stimulus) {
 			${stimulus}
 			<div class="recording" id="recording-countdown" hidden>
 				<p class="recording-title">
-					Recording will start in <strong><span id="countdown-clock">${RECORDING_COUNTDOWN_SECONDS}</span></strong>
+					Recording will start in<strong><span id="countdown-clock">${RECORDING_COUNTDOWN_SECONDS}</span></strong>
 				</p>
 			</div>
 		`,
