@@ -7,11 +7,12 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
-function startTimer(min_len) {
+function startTimer(min_len, max_len) {
     if (timerInterval) clearInterval(timerInterval);
 
     var wait_time = (min_len + 0.5) * 1000;
     var start_time = performance.now();
+    var max_reached = false;
     var btn = null;
     var timer = null;
 
@@ -20,7 +21,6 @@ function startTimer(min_len) {
         timer = document.getElementById('req');
         if (btn) btn.disabled = true;
     }, 100);
-    
 
     var init_minutes = Math.floor(wait_time /1000 /60);
     var init_seconds = Math.floor((wait_time % 60000) / 1000);
@@ -43,9 +43,28 @@ function startTimer(min_len) {
 		if (time_left <= 0) {
 			if (clock) clock.innerHTML = '0:00';
 			if (btn) btn.disabled = false;
-            if (timer) timer.closest('p').style.display = 'none';
 
-			clearInterval(timerInterval);
+            if (!max_reached) {
+                max_reached = true;
+                setTimeout(() => {
+                    wait_time = (max_len - min_len + 0.5) * 1000;
+                    start_time = performance.now();
+
+                    init_minutes = Math.floor(wait_time / 1000 / 60);
+                    init_seconds = Math.floor((wait_time % 60000) / 1000);
+
+                    if (clock) {
+                        var req = document.querySelector('#req');
+                        req.innerHTML = 'Duration remaining';
+                        clock.innerHTML =
+                            init_minutes +
+                            ':' +
+                            init_seconds.toString().padStart(2, '0');
+                    }
+                }, 100);
+            } else {
+                clearInterval(timerInterval);
+            }
 		}
 	}, 250);
 }

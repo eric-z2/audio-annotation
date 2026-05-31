@@ -158,7 +158,7 @@ async function mcBefore(i, j, repetitions, trialData, trialJson) {
 		<br>
 		<div class='recording'>
 			<h2 class='recording-title'>Recording in Progress</h2>
-            <p><span id="req">Duration remaining</span>: <strong><span id="clock"></span></strong></p>
+            <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
 
@@ -192,7 +192,7 @@ async function mcAfter(i, j, repetitions, trialData, trialJson) {
 		<br>
 		<div class='recording'>
 			<h2 class='recording-title'>Recording in Progress</h2>
-            <p><span id="req">Duration remaining</span>: <strong><span id="clock"></span></strong></p>
+            <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
 		</div>
 	`;
 
@@ -254,18 +254,18 @@ async function createTimeline(allJson) {
             </div>
             <div class='recording'>
                 <h2 class='recording-title'>Recording in Progress</h2>
-                <p><span id="req">Duration remaining</span>: <strong><span id="clock"></span></strong></p>
+                <p><span id="req">Required duration remaining</span>: <strong><span id="clock"></span></strong></p>
             </div>
             `,
 		recording_duration: MAX_LEN_TEST * 1000 + 1000,
 		allow_playback: true,
 		done_button_label: 'Finish',
 		on_load: function () {
-			startTimer(MIN_LEN_TEST);
+			startTimer(MIN_LEN_TEST, MAX_LEN_TEST);
 
 			document.addEventListener('click', function (e) {
 				if (e.target.id == 'record-again') {
-					startTimer(MIN_LEN_TEST);
+					startTimer(MIN_LEN_TEST, MAX_LEN_TEST);
 				}
 			});
 		},
@@ -301,11 +301,11 @@ async function createTimeline(allJson) {
 					on_load: function () {
 						var minTime = trialData['min_time'];
 						var maxTime = trialData['max_time'];
-						startTimer(minTime);
+						startTimer(minTime, maxTime);
 
 						document.addEventListener('click', function (e) {
 							if (e.target.id == 'record-again') {
-								startTimer(minTime);
+								startTimer(minTime, maxTime);
 							}
 						});
 					},
@@ -364,11 +364,11 @@ async function createTimeline(allJson) {
 					on_load: function () {
 						var minTime = trialData['min_time'];
 						var maxTime = trialData['max_time'];
-						startTimer(minTime);
+						startTimer(minTime, maxTime);
 
 						document.addEventListener('click', function (e) {
 							if (e.target.id == 'record-again') {
-								startTimer(minTime);
+								startTimer(minTime, maxTime);
 							}
 						});
 					},
