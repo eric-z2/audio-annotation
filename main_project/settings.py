@@ -149,7 +149,7 @@ CSRF_TRUSTED_ORIGINS = ['https://nlp.cas.mcmaster.ca']
 # Main page and ending page display text
 PROJECT_NAME = 'Audio Annotation'
 INTRODUCTION_TEXT = 'Your task is to record two audio responses for two questions. Additional details will be provided.'
-ENDING_TEXT = 'You have reached the end of the task, thank you for participating!'
+ENDING_TEXT = 'You have reached the end of the task, thank you for participating!\n\nUse the following completion code on Prolific: CNHGQOCI'
 
 # Design configurations
 BASE_COLOUR = "#4f46e5"

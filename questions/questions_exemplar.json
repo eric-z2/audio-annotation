@@ -23,9 +23,9 @@
         "instructions": "Your task is to read and analyze a post from the Reddit forum r/AmITheAsshole. In this forum, each author describes a situation or interpersonal conflict that they were involved in and ask if they did something wrong or not, i.e., AITA; \"am I the asshole\"? For each situation, answer the question \"Is the author the asshole in this situation?\" Here are the possible answers you may provide: <strong>NTA (Not the Asshole)</strong>: The author did nothing wrong, or <strong>YTA (You're the Asshole)</strong>: The author did something wrong. <br> Please use your best judgement based on the given information and limit your response to only one of these options.<br><br> The post will be displayed after clicking 'Begin' and you will have three minutes to speak and read. As you are reading the post, please speak your thoughts, reasoning, and your conclusion out loud. You will have an additional minute after the three minutes to wrap up your thoughts.",
         "mc_options": ["NTA (Not the asshole)", "YTA (You're the asshole)"],
         "display": "after",
-        "repetitions": 3,
+        "repetitions": 8,
         "selection": "sequential",
-        "min_time": 5,
+        "min_time": 10,
         "max_time": 240,
         "questions": [
             {
