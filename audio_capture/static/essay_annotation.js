@@ -341,9 +341,8 @@ async function createTimeline(allJson) {
 								trial_id: trialJson['id'],
 							}),
 						});
+						// Print the size of the base64 file and then null it because we already uploaded
 						console.log(typeof trialAudio);
-						console.log(trialAudio);
-						console.log(trialAudio instanceof Blob);
 						const sizeInBytes = (trialAudio.length * 3) / 4;
 						console.log((sizeInBytes / (1024 * 1024)).toFixed(2) + ' MB');
 						trialAudio = null;

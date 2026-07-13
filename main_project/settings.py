@@ -152,7 +152,7 @@ INTRODUCTION_TEXT = 'Your task is to record two audio responses for two question
 ENDING_TEXT = 'You have reached the end of the task, thank you for participating!<br/><br/>Use the following completion code on Prolific: CNHGQOCI'
 
 # Upload size limits
-DATA_UPLOAD_MAX_MEMORY_SIZE = 2684354560
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
 FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600
 
 # Design configurations
