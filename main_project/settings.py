@@ -151,6 +151,10 @@ PROJECT_NAME = 'Audio Annotation'
 INTRODUCTION_TEXT = 'Your task is to record two audio responses for two questions. Additional details will be provided.'
 ENDING_TEXT = 'You have reached the end of the task, thank you for participating!<br/><br/>Use the following completion code on Prolific: CNHGQOCI'
 
+# Upload size limits
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2684354560
+FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600
+
 # Design configurations
 BASE_COLOUR = "#4f46e5"
 BASE_COLOUR_DARK = "#2e22b3"
