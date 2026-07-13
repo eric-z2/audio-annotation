@@ -58,9 +58,9 @@ function createBeginTrial(stimulus) {
 
 async function baseBefore(i, j, repetitions, trialData, trialJson) {
 	var instruction_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j + 1} of ${repetitions})</h2>
 		<div class="section">
-			<p>
+			<p class='instruction_emphasize'>
 				${trialData['instructions']}
 			</p>
 		</div>
@@ -74,7 +74,7 @@ async function baseBefore(i, j, repetitions, trialData, trialJson) {
 	var trial_text = `
 		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
 		<div class="section">
-			<p>
+			<p class='instruction_emphasize'>
 				${trialData['instructions']}
 			</p>
 		</div>
@@ -99,16 +99,16 @@ async function baseAfter(i, j, repetitions, trialData, trialJson) {
 	var instruction_text = `
 		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j + 1} of ${repetitions})</h2>
 		<div class="section">
-			<p>
+			<p class='instruction_emphasize'>
 				${trialData['instructions']}
 			</p>
 		</div>
 	`;
 
 	var trial_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j + 1} of ${repetitions})</h2>
 		<div class="section">
-			<p>
+			<p class='instruction_emphasize'>
 				${trialData['instructions']}
 			</p>
 		</div>
@@ -133,7 +133,7 @@ async function mcBefore(i, j, repetitions, trialData, trialJson) {
 	var instruction_text = `
 		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j + 1} of ${repetitions})</h2>
 		<div class="section">
-			<p>
+			<p class='instruction_emphasize'>
 				${trialData['instructions']}
 			</p>
 		</div>
@@ -145,9 +145,9 @@ async function mcBefore(i, j, repetitions, trialData, trialJson) {
 	`;
 
 	var trial_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j + 1} of ${repetitions})</h2>
 		<div class="section">
-			<p>
+			<p class='instruction_emphasize'>
 				${trialData['instructions']}
 			</p>
 		</div>
@@ -172,16 +172,16 @@ async function mcAfter(i, j, repetitions, trialData, trialJson) {
 	var instruction_text = `
 		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j + 1} of ${repetitions})</h2>
 		<div class="section">
-			<p>
+			<p class='instruction_emphasize'>
 				${trialData['instructions']}
 			</p>
 		</div>
 	`;
 
 	var trial_text = `
-		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j+1} of ${repetitions})</h2>
+		<h2 class="section-label"> Part ${i + 1}: ${trialData['trial_name']} (Trial ${j + 1} of ${repetitions})</h2>
 		<div class="section">
-			<p>
+			<p class='instruction_emphasize'>
 				${trialData['instructions']}
 			</p>
 		</div>
@@ -411,6 +411,50 @@ async function createTimeline(allJson) {
 		}
 	}
 
+	var feedback = {
+		type: jsPsychSurveyText,
+		questions: [
+			{prompt: '(Optional) Please share any additional thoughts you have about our task and anything you think we should do to improve it. Your feedback would be greatly appreciated!', rows: 5}
+		],
+		on_finish: function (data) {
+			var feedbackText = '';
+			if (Array.isArray(data.response)) {
+				feedbackText = data.response[0] || '';
+			} else if (data.response && typeof data.response === 'object') {
+				feedbackText = Object.values(data.response).find(function (value) {
+					return typeof value === 'string' && value.trim() !== '';
+				}) || '';
+			} else {
+				feedbackText = data.response || '';
+			}
+
+			if (!feedbackText.trim()) {
+				return;
+			}
+
+			fetch('save_feedback/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': getCookie('csrftoken'),
+				},
+				body: JSON.stringify({
+					feedback_text: feedbackText,
+				}),
+			})
+				.then(function (response) {
+					console.log('Feedback response status:', response.status);
+					return response.json();
+				})
+				.then(function (result) {
+					console.log('Feedback save result:', result);
+				})
+				.catch(function (error) {
+					console.error('Error saving feedback:', error);
+				});
+		},
+	}
+
 	var endscreen = {
 		type: jsPsychInstructions,
 		pages: [
@@ -419,6 +463,7 @@ async function createTimeline(allJson) {
 		show_clickable_nav: false,
 	};
 
+	timeline.push(feedback);
 	timeline.push(endscreen);
 
 	return timeline;

@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, render
-from django.http import HttpResponse, JsonResponse
-from django.template import loader
+from django.http import JsonResponse
 import base64
 import json
+import os
+from pathlib import Path
 from django.core.files.base import ContentFile
 from .models import AudioStorage
 import datetime
@@ -72,3 +73,41 @@ def save_audio(request):
             'status': 'error',
             'message': 'Method not allowed'
         }, status=405)    
+
+def save_feedback(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            feedback_text = (data.get('feedback_text') or '').strip()
+            if not feedback_text:
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'No feedback provided'
+                })
+
+            crowdworker_id = request.session.get('crowdworker_id', 'unknown')
+            safe_worker_id = ''.join(ch if ch.isalnum() or ch in {'_', '-'} else '_' for ch in crowdworker_id)
+            date = datetime.datetime.now().strftime("%Y-%m-%d")
+            filename = f'feedback_{safe_worker_id}_{date}.txt'
+
+            feedback_dir = Path(settings.MEDIA_ROOT) / 'feedback'
+            feedback_dir.mkdir(parents=True, exist_ok=True)
+
+            feedback_path = feedback_dir / filename
+            with open(feedback_path, 'w') as f:
+                f.write(feedback_text)
+
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Feedback saved successfully'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            }, status=400)
+    else:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Method not allowed'
+        }, status=405)

@@ -129,6 +129,15 @@ p, ul, .jspsych-content {
     text-align: left;
 }
 
+.instruction_emphasize {
+    background: #fffef3;
+    border: 1px solid #fffea8;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    line-height: 1.65;
+    text-align: left;
+}
+
 .recording {
     background: #fff1f2;
     border: 1px solid #fecdd3;
@@ -189,6 +198,10 @@ p, ul, .jspsych-content {
 
 .worker-input::placeholder {
     color: #94a3b8;
+}
+
+.jspsych-survey-text {
+    margin-bottom: 2em;
 }
 
 /* -- recording dot --*/
