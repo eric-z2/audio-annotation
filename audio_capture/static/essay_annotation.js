@@ -344,7 +344,8 @@ async function createTimeline(allJson) {
 						console.log(typeof trialAudio);
 						console.log(trialAudio);
 						console.log(trialAudio instanceof Blob);
-						console.log((trialAudio.size / (1024 * 1024)).toFixed(2) + ' MB');
+						const sizeInBytes = (trialAudio.length * 3) / 4;
+						console.log((sizeInBytes / (1024 * 1024)).toFixed(2) + ' MB');
 						trialAudio = null;
 					},
 				};
