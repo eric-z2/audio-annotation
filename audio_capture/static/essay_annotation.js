@@ -341,6 +341,7 @@ async function createTimeline(allJson) {
 								trial_id: trialJson['id'],
 							}),
 						});
+						console.log((trialAudio.size / (1024 * 1024)).toFixed(2) + ' MB');
 						trialAudio = null;
 					},
 				};
