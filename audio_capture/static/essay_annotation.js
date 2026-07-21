@@ -414,7 +414,7 @@ async function createTimeline(allJson) {
 	var feedback = {
 		type: jsPsychSurveyText,
 		questions: [
-			{prompt: '(Optional) Please share any additional thoughts you have about our task and anything you think we should do to improve it. Your feedback would be greatly appreciated!', rows: 5}
+			{prompt: '(Optional) Please share any additional thoughts you have about our task and anything you think we should do to improve it. Your feedback would be greatly appreciated!', rows: 8}
 		],
 		on_finish: function (data) {
 			var feedbackText = '';
