@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import AudioStorage, QuestionAssignment
 
-# Register your models here.
+admin.site.register(AudioStorage)
+admin.site.register(QuestionAssignment)

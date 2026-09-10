@@ -162,3 +162,12 @@ BASE_COLOUR_DARK = "#2e22b3"
 # Time settings in seconds (no modification recommended)
 MIN_LEN_TEST = 5
 MAX_LEN_TEST = 10
+
+# Fetch question config file
+QUESTION_CONFIG_FILE = BASE_DIR / 'questions' / 'questions_exemplar.json'
+# A question stops being assigned after this many completed annotations.
+TARGET_ANNOTATIONS_PER_QUESTION = 3
+
+# An assignment counts as in progress for this long.  It can be issued again
+# after this lease expires if the participant never uploads audio.
+QUESTION_ASSIGNMENT_LEASE_HOURS = 24

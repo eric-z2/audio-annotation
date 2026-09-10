@@ -4,10 +4,11 @@ const ENDING_TEXT = JSON.parse(document.getElementById('end_text').textContent);
 const RECORDING_COUNTDOWN_SECONDS = 3;
 
 async function loadJson() {
-	var response = await fetch('/annotation/static/questions_exemplar.json');
-	var json = await response.json();
-
-	return json;
+	var response = await fetch('assign_questions/');
+	if (!response.ok) {
+		throw new Error('Unable to assign questions');
+	}
+	return response.json();
 }
 
 function createBeginTrial(stimulus) {
@@ -280,7 +281,7 @@ async function createTimeline(allJson) {
 		const { repetitions = 1, questions: rawQuestions = [] } = trialData;
 		const questions = trialData.selection == 'sequential'
 			? rawQuestions
-			: shuffle([...rawQuestions]);
+			: await shuffle([...rawQuestions]);
 
 		for (let j = 0; j < Math.min(repetitions, questions.length); j++) {
 			const trialJson = questions[j];
@@ -337,8 +338,9 @@ async function createTimeline(allJson) {
 							body: JSON.stringify({
 								audio_base64: trialAudio,
 								label: data.response.label,
-								trial_name: trialData['trial_name'] + "_" + i,
+								trial_name: trialData['trial_name'],
 								trial_id: trialJson['id'],
+								assignment_id: trialJson['assignment_id'],
 							}),
 						});
 						// Print the size of the base64 file and then null it because we already uploaded
@@ -388,8 +390,9 @@ async function createTimeline(allJson) {
 							},
 							body: JSON.stringify({
 								audio_base64: data.response,
-								trial_name: trialData['trial_name'] + "_" + i,
+								trial_name: trialData['trial_name'],
 								trial_id: trialJson['id'],
+								assignment_id: trialJson['assignment_id'],
 							}),
 						})
 							.then((response) => {
@@ -414,7 +417,7 @@ async function createTimeline(allJson) {
 	var feedback = {
 		type: jsPsychSurveyText,
 		questions: [
-			{prompt: '(Optional) Please share any additional thoughts you have about our task and anything you think we should do to improve it. Your feedback would be greatly appreciated!', rows: 8}
+			{prompt: '(Optional) Please share any additional thoughts you have about our task and anything you think we should do to improve it. Your feedback would be greatly appreciated!', rows: 8, columns: 60}
 		],
 		on_finish: function (data) {
 			var feedbackText = '';

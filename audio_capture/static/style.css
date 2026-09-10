@@ -20,7 +20,7 @@ body {
     margin-right: 20%;
 }
 
-p, ul, .jspsych-content {
+p, ul, .jspsych-content, #jspsych-target {
     font-size: 1rem;
     font-family: 'Open Sans', sans-serif;
 }
@@ -138,23 +138,6 @@ p, ul, .jspsych-content {
     text-align: left;
 }
 
-.recording {
-    background: #fff1f2;
-    border: 1px solid #fecdd3;
-    border-radius: 0.75rem;
-    padding: 1rem 1.25rem;
-    color: #9f1239;
-    line-height: 1.65;
-}
-
-.recording-title {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    font-size: 1.25em;
-    font-weight: 700;
-}
-
 .list, .jspsych-survey-multi-choice-option {
     text-align: left;
     margin-left: 2em;
@@ -200,11 +183,50 @@ p, ul, .jspsych-content {
     color: #94a3b8;
 }
 
+/* jspsych */
+.jspsych-content {
+    margin-bottom: 0.5em;
+}
+
 .jspsych-survey-text {
     margin-bottom: 2em;
 }
 
-/* -- recording dot --*/
+.jspsych-survey-text textarea {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    min-height: 12rem;
+    padding: 12px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.6rem;
+}
+
+#which-mic {
+    margin-top: 1em;
+}
+
+/* recording dot */
+.recording {
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    color: #9f1239;
+    line-height: 1.65;
+}
+
+.recording-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 1.25em;
+    font-weight: 700;
+}
+
 .recording:not(#recording-countdown) .recording-title::before {
     content: "";
     width: 0.7rem;
@@ -228,7 +250,7 @@ p, ul, .jspsych-content {
     }
 }
 
-/* ── Footer row ── */
+/* footer row */
 .card-footer {
     display: flex;
     justify-content: center;
@@ -261,22 +283,6 @@ p, ul, .jspsych-content {
     cursor: not-allowed;
 }
 
-@media (max-width: 640px) {
-    .card {
-        padding: 1.5rem 1.25rem;
-    }
-    .top-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-    }
-}
-
-/* jspsych */
-.jspsych-content {
-  margin-bottom: 0.5em;
-}
-
 .jspsych-btn {
     display: inline-flex;
     align-items: center;
@@ -298,6 +304,13 @@ p, ul, .jspsych-content {
     background-color: var(--base_colour_dark);
 }
 
-#which-mic {
-  margin-top: 1em;
+@media (max-width: 640px) {
+    .card {
+        padding: 1.5rem 1.25rem;
+    }
+    .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
 }
