@@ -104,7 +104,7 @@ Configurations can be found at the bottom of `settings.py`. Key configuration op
 - **BASE_COLOUR_DARK**: Accent to the base colour. Colour displayed when hovering over buttons.
 - **MIN_LEN_TEST** and **MAX_LEN_TEST**: Time lengths (in seconds) for the microphone test before all the trials. No modifications recommended.
 - **QUESTION_CONFIG_FILE**: The path to the JSON file containing the trial and question configuration. The default is `questions/questions_exemplar.json`.
-- **TARGET_ANNOTATIONS_PER_QUESTION**: The maximum combined number of completed and active annotations for a question. The default is 3.
+- **TARGET_ANNOTATIONS_PER_QUESTION**: The maximum combined number of completed and active annotations for a restricted question. The default is 3.
 - **QUESTION_ASSIGNMENT_LEASE_HOURS**: The number of hours an uncompleted question assignment is held for a participant. The default is 24.
 
 ### 2. Question JSON file
@@ -116,13 +116,14 @@ Questions are loaded from the JSON file set in `QUESTION_CONFIG_FILE`. An exempl
 - **instructions**: Detailed instructions specific to the trial. Information like background information, what the participant has to do, and the estimated time length should go here.
 - **min_time**: Minimum time in seconds the participant has to record for.
 - **max_time**: Maximum time in seconds the participant can record for.
-- **questions**: A list of questions as dictionaries. Questions can be as long as necessary. The server assigns eligible questions to participants based on the annotation target.
+- **questions**: A list of questions as dictionaries. Questions can be as long as necessary. Restricted trials use the annotation target when assigning eligible questions.
 - **id**: A unique identifier for each question within its trial. This is used to track assignments and completed annotations.
 
 #### Optional configurations
 - **display**: When the question is displayed to the participant. Two possible options: "before" and "after." "Before" displays the question before the timer starts. "After" displays the question after the timer starts. Default is "before."
 - **repetitions**: The number of times a single trial will be repeated. The default is 1.
 - **selection**: How eligible questions are selected out of the pool. Two possible options: "sequential" and "random." Default is "random."
+- **restrict_question_assignments**: Set to `true` to limit each question to the configured number of distinct participants and to hold unfinished assignments for the configured lease period. Default is `false`.
 - **mc_options**: Multiple choice options that will appear after a trial. These will be stored with the trial in the database. A sample use case is participants annotating r/AmITheAsshole forum where multiple choice options represents their final verdict (e.g., NTA (Not the asshole), YTA (You're the asshole), etc.).
 
 ## Project Structure
@@ -134,7 +135,7 @@ Questions are loaded from the JSON file set in `QUESTION_CONFIG_FILE`. An exempl
 
 ## Disclaimers
 
-Question assignments are tracked in the database. Refreshing the page during an active assignment returns the same question to the participant. Uncompleted assignments expire after the configured lease period and can then be assigned again.
+Restricted question assignments are tracked in the database. Refreshing the page during an active assignment returns the same question to the participant. Uncompleted restricted assignments expire after the configured lease period and can then be assigned again.
 
 ## Contact
 

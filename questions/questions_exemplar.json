@@ -25,6 +25,7 @@
         "display": "after",
         "repetitions": 8,
         "selection": "sequential",
+        "restrict_question_assignments": true,
         "min_time": 10,
         "max_time": 180,
         "questions": [

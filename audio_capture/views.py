@@ -88,6 +88,7 @@ def assign_questions(request):
             trial_name = trial['trial_name']
             repetitions = trial.get('repetitions', 1)
             raw_questions = trial.get('questions', [])
+            restrict_question_assignments = trial.get('restrict_question_assignments', False)
             questions_by_id = {str(question['id']): question for question in raw_questions}
 
             # Reloading the page returns the participant's still-valid lease rather
@@ -105,27 +106,41 @@ def assign_questions(request):
             ][:repetitions]
 
             selected_ids = {str(question['id']) for question in selected}
-            completed_counts = dict(QuestionAssignment.objects.filter(
-                trial_name=trial_name,
-                status=QuestionAssignment.Status.COMPLETED,
-            ).values('question_id').annotate(total=Count('id')).values_list('question_id', 'total'))
-            active_counts = dict(QuestionAssignment.objects.filter(
-                trial_name=trial_name,
-                status=QuestionAssignment.Status.ASSIGNED,
-                expires_at__gt=now,
-            ).values('question_id').annotate(total=Count('id')).values_list('question_id', 'total'))
+            if restrict_question_assignments:
+                previously_assigned_ids = set(QuestionAssignment.objects.filter(
+                    trial_name=trial_name,
+                    user_id=crowdworker_id,
+                ).values_list('question_id', flat=True))
+                completed_counts = dict(QuestionAssignment.objects.filter(
+                    trial_name=trial_name,
+                    status=QuestionAssignment.Status.COMPLETED,
+                ).values('question_id').annotate(total=Count('id')).values_list('question_id', 'total'))
+                active_counts = dict(QuestionAssignment.objects.filter(
+                    trial_name=trial_name,
+                    status=QuestionAssignment.Status.ASSIGNED,
+                    expires_at__gt=now,
+                ).values('question_id').annotate(total=Count('id')).values_list('question_id', 'total'))
+            else:
+                previously_assigned_ids = set()
+                completed_counts = {}
+                active_counts = {}
 
             eligible = [
                 question for question in raw_questions
                 if str(question['id']) not in selected_ids
-                and completed_counts.get(str(question['id']), 0) < target
-                # Never allow completed plus still-active assignments to exceed
-                # the target. For target=3 and two active leases, exactly one
-                # more participant can receive the question.
                 and (
-                    completed_counts.get(str(question['id']), 0)
-                    + active_counts.get(str(question['id']), 0)
-                    < target
+                    not restrict_question_assignments
+                    or str(question['id']) not in previously_assigned_ids
+                )
+                # For restricted trials, never allow completed plus still-active
+                # assignments to exceed the target. 
+                and (
+                    not restrict_question_assignments
+                    or (
+                        completed_counts.get(str(question['id']), 0)
+                        + active_counts.get(str(question['id']), 0)
+                        < target
+                    )
                 )
             ]
             if trial.get('selection', 'random') != 'sequential':
