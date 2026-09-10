@@ -19,7 +19,7 @@ class QuestionAssignment(models.Model):
         COMPLETED = 'completed', 'Completed'
         EXPIRED = 'expired', 'Expired'
 
-    trial_name = models.CharField(max_length=50)
+    trial_name = models.CharField(max_length=100)
     question_id = models.CharField(max_length=100)
     user_id = models.CharField(max_length=100)
     assigned_at = models.DateTimeField(auto_now_add=True)
