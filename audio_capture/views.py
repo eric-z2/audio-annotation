@@ -21,6 +21,10 @@ def load_question_config():
         return json.load(question_file)
 
 
+def safe_name(value):
+    return ''.join(ch if ch.isalnum() or ch in {'_', '-'} else '_' for ch in str(value))
+
+
 def expire_assignments(now):
     QuestionAssignment.objects.filter(
         status=QuestionAssignment.Status.ASSIGNED,
@@ -73,6 +77,14 @@ def assign_questions(request):
         all_trials = load_question_config()
     except (OSError, json.JSONDecodeError) as error:
         return JsonResponse({'status': 'error', 'message': f'Unable to load questions: {error}'}, status=500)
+
+    # Assignments, capacity counts and uploads are all keyed by trial_name.
+    trial_names = [trial.get('trial_name') for trial in all_trials]
+    if len(set(trial_names)) != len(trial_names):
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Trial names in the question configuration must be unique',
+        }, status=500)
 
     crowdworker_id = request.session['crowdworker_id']
     target = settings.TARGET_ANNOTATIONS_PER_QUESTION
@@ -185,11 +197,14 @@ def save_audio(request):
                 if assignment.trial_name != trial_name or assignment.question_id != str(trial_id):
                     raise ValueError('Assignment does not match the submitted question')
 
-                audio_file = ContentFile(base64.b64decode(audio_data), name=f"{date}_{trial_name}_{crowdworker_id}.webm")
+                audio_file = ContentFile(
+                    base64.b64decode(audio_data),
+                    name=f"{date}_{safe_name(trial_name)}_{safe_name(trial_id)}_{safe_name(crowdworker_id)}.webm",
+                )
                 new_entry = AudioStorage(
                     trial_name=trial_name,
                     user_id=crowdworker_id,
-                    trial_id=trial_id,
+                    trial_id=str(trial_id),
                     audio_file=audio_file
                 )
                 new_entry.save()
@@ -223,7 +238,7 @@ def save_feedback(request):
                 })
 
             crowdworker_id = request.session.get('crowdworker_id', 'unknown')
-            safe_worker_id = ''.join(ch if ch.isalnum() or ch in {'_', '-'} else '_' for ch in crowdworker_id)
+            safe_worker_id = safe_name(crowdworker_id)
             date = datetime.datetime.now().strftime("%Y-%m-%d")
             filename = f'feedback_{safe_worker_id}_{date}.txt'
 
@@ -231,8 +246,9 @@ def save_feedback(request):
             feedback_dir.mkdir(parents=True, exist_ok=True)
 
             feedback_path = feedback_dir / filename
-            with open(feedback_path, 'w') as f:
-                f.write(feedback_text)
+            # Append so a second submission on the same day does not overwrite the first.
+            with open(feedback_path, 'a', encoding='utf-8') as f:
+                f.write(feedback_text + '\n---\n')
 
             return JsonResponse({
                 'status': 'success',

@@ -134,8 +134,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/audio_storage/'
 MEDIA_ROOT = BASE_DIR / 'audio_storage'
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+# Secure cookies are never sent over plain http, which breaks sessions and
+# CSRF on a local dev server, so only require them outside DEBUG.
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
 
 """
 ==================== SETTINGS.PY CONFIGURATION SETTINGS BELOW ==================== 

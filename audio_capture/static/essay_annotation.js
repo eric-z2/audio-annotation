@@ -25,19 +25,44 @@ function createBeginTrial(stimulus) {
 		choices: ['Begin'],
 		response_ends_trial: false,
 		on_load: function () {
-			var beginButton = document.querySelector('.jspsych-btn');
+			var beginButton = document.querySelector('#jspsych-target .jspsych-btn');
 			var countdown = document.getElementById('recording-countdown');
 			var countdownClock = document.getElementById('countdown-clock');
+			var started = false;
 
-			if (!beginButton || !countdown || !countdownClock) {
+			if (!beginButton) {
 				return;
 			}
 
+			// The plugin disables its buttons on any click, so re-enable on failure
+			// to make sure the participant is never left with a dead button.
+			function endTrial() {
+				try {
+					window.jsPsych.finishTrial();
+				} catch (error) {
+					console.error('Unable to finish begin trial:', error);
+					started = false;
+					beginButton.disabled = false;
+					beginButton.textContent = 'Begin';
+					if (countdown) countdown.hidden = true;
+				}
+			}
+
 			beginButton.addEventListener('click', function () {
-				countdownStarted = true;
-				var secondsRemaining = RECORDING_COUNTDOWN_SECONDS;
+				if (started) {
+					return;
+				}
+				started = true;
 
 				beginButton.disabled = true;
+
+				// Without the countdown elements, fall back to ending immediately.
+				if (!countdown || !countdownClock) {
+					endTrial();
+					return;
+				}
+
+				var secondsRemaining = RECORDING_COUNTDOWN_SECONDS;
 				beginButton.textContent = 'Starting...';
 				countdown.hidden = false;
 				countdownClock.textContent = secondsRemaining;
@@ -49,7 +74,7 @@ function createBeginTrial(stimulus) {
 						countdownClock.textContent = secondsRemaining;
 					} else {
 						clearInterval(countdownInterval);
-						window.jsPsych.finishTrial();
+						endTrial();
 					}
 				}, 1000);
 			});
@@ -206,7 +231,7 @@ async function mcAfter(i, j, repetitions, trialData, trialJson) {
 // Source - https://stackoverflow.com/a/2450976
 // Posted by ChristopheD, modified by community. See post 'Timeline' for change history
 // Retrieved 2026-04-09, License - CC BY-SA 4.0
-async function shuffle(array) {
+function shuffle(array) {
   let currentIndex = array.length;
 
   // While there remain elements to shuffle...
@@ -220,6 +245,8 @@ async function shuffle(array) {
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex], array[currentIndex]];
   }
+
+  return array;
 }
 
 async function createTimeline(allJson) {
@@ -263,12 +290,10 @@ async function createTimeline(allJson) {
 		done_button_label: 'Finish',
 		on_load: function () {
 			startTimer(MIN_LEN_TEST, MAX_LEN_TEST);
-
-			document.addEventListener('click', function (e) {
-				if (e.target.id == 'record-again') {
-					startTimer(MIN_LEN_TEST, MAX_LEN_TEST);
-				}
-			});
+			bindRecordAgain(MIN_LEN_TEST, MAX_LEN_TEST);
+		},
+		on_finish: function () {
+			stopTimer();
 		},
 	};
 
@@ -281,7 +306,7 @@ async function createTimeline(allJson) {
 		const { repetitions = 1, questions: rawQuestions = [] } = trialData;
 		const questions = trialData.selection == 'sequential'
 			? rawQuestions
-			: await shuffle([...rawQuestions]);
+			: shuffle([...rawQuestions]);
 
 		for (let j = 0; j < Math.min(repetitions, questions.length); j++) {
 			const trialJson = questions[j];
@@ -292,6 +317,7 @@ async function createTimeline(allJson) {
 					: await mcBefore(i, j, repetitions, trialData, trialJson);
 
 				var instruction = createBeginTrial(text['instruction_text']);
+				const pending = {audio: null};
 
 				var trial = {
 					type: jsPsychHtmlAudioResponse,
@@ -303,18 +329,11 @@ async function createTimeline(allJson) {
 						var minTime = trialData['min_time'];
 						var maxTime = trialData['max_time'];
 						startTimer(minTime, maxTime);
-
-						document.addEventListener('click', function (e) {
-							if (e.target.id == 'record-again') {
-								startTimer(minTime, maxTime);
-							}
-						});
+						bindRecordAgain(minTime, maxTime);
 					},
 					on_finish: function (data) {
-						if (timerInterval) {
-							clearInterval(timerInterval);
-						}
-						trialAudio = data.response;
+						stopTimer();
+						pending.audio = data.response;
 					},
 				};
 
@@ -329,25 +348,19 @@ async function createTimeline(allJson) {
 						},
 					],
 					on_finish: function (data) {
-						fetch('save_audio/', {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-								'X-CSRFToken': getCookie('csrftoken'),
-							},
-							body: JSON.stringify({
-								audio_base64: trialAudio,
-								label: data.response.label,
-								trial_name: trialData['trial_name'],
-								trial_id: trialJson['id'],
-								assignment_id: trialJson['assignment_id'],
-							}),
+						var audio = pending.audio;
+						pending.audio = null;
+						if (!audio) {
+							showError('No recording was captured for the last question, so it could not be saved.');
+							return;
+						}
+						uploadAudio({
+							audio_base64: audio,
+							label: data.response.label,
+							trial_name: trialData['trial_name'],
+							trial_id: trialJson['id'],
+							assignment_id: trialJson['assignment_id'],
 						});
-						// Print the size of the base64 file and then null it because we already uploaded
-						console.log(typeof trialAudio);
-						const sizeInBytes = (trialAudio.length * 3) / 4;
-						console.log((sizeInBytes / (1024 * 1024)).toFixed(2) + ' MB');
-						trialAudio = null;
 					},
 				};
 
@@ -371,40 +384,16 @@ async function createTimeline(allJson) {
 						var minTime = trialData['min_time'];
 						var maxTime = trialData['max_time'];
 						startTimer(minTime, maxTime);
-
-						document.addEventListener('click', function (e) {
-							if (e.target.id == 'record-again') {
-								startTimer(minTime, maxTime);
-							}
-						});
+						bindRecordAgain(minTime, maxTime);
 					},
 					on_finish: function (data) {
-						if (timerInterval) {
-							clearInterval(timerInterval);
-						}
-						fetch('save_audio/', {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-								'X-CSRFToken': getCookie('csrftoken'),
-							},
-							body: JSON.stringify({
-								audio_base64: data.response,
-								trial_name: trialData['trial_name'],
-								trial_id: trialJson['id'],
-								assignment_id: trialJson['assignment_id'],
-							}),
-						})
-							.then((response) => {
-								console.log('Response status:', response.status); // Debug log
-								return response.json();
-							})
-							.then((data) => {
-								console.log('Success:', data);
-							})
-							.catch((error) => {
-								console.error('Error:', error);
-							});
+						stopTimer();
+						uploadAudio({
+							audio_base64: data.response,
+							trial_name: trialData['trial_name'],
+							trial_id: trialJson['id'],
+							assignment_id: trialJson['assignment_id'],
+						});
 					},
 				};
 

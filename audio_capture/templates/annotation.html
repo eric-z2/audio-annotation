@@ -27,15 +27,24 @@
     <title>{% block title %}Audio Annotation Main Page{% endblock %}</title>
 
     <script>
-        window.addEventListener('unhandledrejection', (e) => {
-            console.log('Unhandled promise rejection: ' + e.reason);
-            document.getElementById('error-message').innerHTML =
-                'An error occurred during loading. This could be because your microphone is blocked by your browser settings. Please check your settings and try again.';
-        });
+        function showLoadError(reason) {
+            console.log('Unhandled promise rejection: ' + reason);
+            var name = reason && reason.name;
+            var message;
+            if (name === 'NotAllowedError' || name === 'NotFoundError' || name === 'NotReadableError') {
+                message = 'Your microphone could not be accessed. Please check that it is connected and not blocked by your browser settings, then reload the page.';
+            } else {
+                message = 'An error occurred: ' + ((reason && reason.message) || reason) +
+                    '. Please reload the page; if the problem continues, contact the researchers.';
+            }
+            document.getElementById('error-message').textContent = message;
+        }
+
+        window.addEventListener('unhandledrejection', (e) => showLoadError(e.reason));
 
         async function beginTrials() {
             const allJson = await loadJson();
-            const timeline = createTimeline(allJson);
+            const timeline = await createTimeline(allJson);
 
             return timeline;
         }
