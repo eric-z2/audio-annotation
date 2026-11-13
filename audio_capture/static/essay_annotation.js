@@ -11,6 +11,46 @@ async function loadJson() {
 	return response.json();
 }
 
+// The html-audio-response plugin only draws its page once the MediaRecorder
+// fires "start". If the microphone stream has died since the mic test (device
+// switched or slept, browser reclaimed it) that event never fires and the
+// participant is stuck on the old, disabled Begin page. Check the stream and
+// re-acquire it before the trial starts; the Begin click is a user gesture.
+async function ensureMicrophoneReady() {
+	var pluginAPI = window.jsPsych.pluginAPI;
+	var recorder = pluginAPI.getMicrophoneRecorder();
+	var tracks = recorder && recorder.stream ? recorder.stream.getAudioTracks() : [];
+	var live = tracks.length > 0 && tracks.every(function (track) {
+		return track.readyState === 'live';
+	});
+
+	if (live && recorder.state === 'inactive') {
+		return;
+	}
+
+	if (recorder && recorder.state !== 'inactive') {
+		try {
+			recorder.stop();
+		} catch (error) {
+			console.warn('Unable to stop stale recorder:', error);
+		}
+	}
+
+	var micTrials = window.jsPsych.data.get().filter({trial_type: 'initialize-microphone'}).values();
+	var deviceId = micTrials.length ? micTrials[micTrials.length - 1].device_id : null;
+
+	var stream;
+	try {
+		stream = await navigator.mediaDevices.getUserMedia({
+			audio: deviceId ? {deviceId: {exact: deviceId}} : true,
+		});
+	} catch (error) {
+		// The chosen device may be gone; fall back to the default microphone.
+		stream = await navigator.mediaDevices.getUserMedia({audio: true});
+	}
+	pluginAPI.initializeMicrophoneRecorder(stream);
+}
+
 function createBeginTrial(stimulus) {
 	return {
 		type: jsPsychHtmlButtonResponse,
@@ -36,15 +76,37 @@ function createBeginTrial(stimulus) {
 
 			// The plugin disables its buttons on any click, so re-enable on failure
 			// to make sure the participant is never left with a dead button.
-			function endTrial() {
+			function resetButton(message) {
+				started = false;
+				beginButton.disabled = false;
+				beginButton.textContent = 'Begin';
+				if (countdown) countdown.hidden = true;
+				if (message) showError(message);
+			}
+
+			// If the recording page has not replaced this page shortly after the trial
+			// ended, the recorder failed to start; give the participant a way out.
+			function watchForStall() {
+				setTimeout(function () {
+					if (document.getElementById('countdown-clock')) {
+						beginButton.disabled = false;
+						beginButton.textContent = 'Reload page';
+						beginButton.onclick = function () {
+							window.location.reload();
+						};
+						showError('Recording could not start. Please reload the page; your progress is kept.');
+					}
+				}, 6000);
+			}
+
+			async function endTrial() {
 				try {
+					await ensureMicrophoneReady();
 					window.jsPsych.finishTrial();
+					watchForStall();
 				} catch (error) {
-					console.error('Unable to finish begin trial:', error);
-					started = false;
-					beginButton.disabled = false;
-					beginButton.textContent = 'Begin';
-					if (countdown) countdown.hidden = true;
+					console.error('Unable to start recording:', error);
+					resetButton('Your microphone could not be accessed. Please check that it is connected and allowed in your browser, then click Begin again.');
 				}
 			}
 
@@ -53,6 +115,7 @@ function createBeginTrial(stimulus) {
 					return;
 				}
 				started = true;
+				showError('');
 
 				beginButton.disabled = true;
 

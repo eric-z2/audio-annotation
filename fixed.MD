@@ -10,6 +10,17 @@ Cause: the html-button-response plugin disables its buttons on any click, and th
 - `finishTrial()` is wrapped in try/catch; on failure the button is re-enabled and reset to "Begin".
 - A `started` guard prevents double starts; the undeclared global `countdownStarted` was removed.
 
+## Follow-up: Begin still stuck after deploy (root cause found)
+**File:** `audio_capture/static/essay_annotation.js`
+
+Reading the jsPsych plugin source showed the real cause. The `html-audio-response` plugin calls `recorder.start()` and only draws its page when the MediaRecorder fires a `start` event. If the microphone stream from the mic test has died (device switched or slept, browser reclaimed it, tab backgrounded for long), that event never fires. The old Begin page stays on screen with its button disabled ("Starting..."), and nothing can recover it. This is why it was random and why the first round of fixes did not remove it.
+
+- `ensureMicrophoneReady()` runs at the end of the Begin countdown. It checks the recorder's stream is live and the recorder idle, and if not, re-acquires the microphone (same device, falling back to default) and re-initialises the recorder. The Begin click counts as the user gesture.
+- If the microphone cannot be re-acquired, the button is re-enabled with a message so the participant can retry.
+- `watchForStall()`: if the recording page has not replaced the Begin page 6s after the trial ended, the button becomes a "Reload page" button with an explanation. Progress is kept because question assignments persist for the lease period.
+
+The console message "An AudioContext was prevented from starting automatically" is unrelated: jsPsych creates a Web Audio context when it initialises, before any click. It is harmless here because the task plays no jsPsych audio stimuli.
+
 ## Other fixes
 
 | Issue | Fix |
